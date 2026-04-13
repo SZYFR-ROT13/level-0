@@ -9,28 +9,9 @@ body {
   background: black;
   color: #00ffcc;
   font-family: monospace;
-  text-align: center;
-  padding-top: 10%;
+  text-align: left;
+  padding: 40px;
   text-shadow: 0 0 5px #00ffcc;
-  overflow: hidden;
-}
-
-/* scanlines */
-body::after {
-  content: "";
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: repeating-linear-gradient(
-    to bottom,
-    rgba(0,255,204,0.05),
-    rgba(0,255,204,0.05) 1px,
-    transparent 1px,
-    transparent 3px
-  );
-  pointer-events: none;
 }
 
 /* cursor */
@@ -44,173 +25,114 @@ body::after {
   25%, 75% { opacity: 0; }
 }
 
-input {
+input, button {
+  display: none;
   background: black;
   border: 1px solid #00ffcc;
   color: #00ffcc;
   padding: 10px;
   margin-top: 20px;
 }
-
-button {
-  background: #00ffcc;
-  color: black;
-  border: none;
-  padding: 10px;
-  margin-top: 10px;
-  cursor: pointer;
-}
-
-/* glitch overlay */
-.glitch-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: #00ffcc;
-  opacity: 0;
-  pointer-events: none;
-  z-index: 999;
-}
-
-/* glitch */
-@keyframes glitch {
-  0% { transform: translate(0); }
-  20% { transform: translate(-5px, 5px); }
-  40% { transform: translate(5px, -5px); }
-  60% { transform: translate(-3px, 3px); }
-  80% { transform: translate(3px, -3px); }
-  100% { transform: translate(0); }
-}
-
-.glitch {
-  animation: glitch 0.3s;
-  text-shadow: 2px 0 red, -2px 0 blue;
-}
-
-/* hidden at start */
-#mainContent {
-  display: none;
-}
 </style>
 </head>
 
 <body>
 
-<div id="boot"></div>
+<div id="terminal" class="cursor"></div>
 
-<div id="mainContent">
-  <h2 class="cursor">> INITIALIZING NODE</h2>
-  <h3>> LEVEL: 0</h3>
-
-  <p>> AUTHENTICATION REQUIRED</p>
-
-  <p><b>01000100 01000001 01001110 01000101</b></p>
-
-  <input type="text" id="answer" placeholder="ENTER PASSWORD">
-  <br>
-  <button onclick="check()">ENTER</button>
-
-  <p id="result"></p>
-</div>
-
-<div class="glitch-overlay" id="glitchOverlay"></div>
+<input type="text" id="answer" placeholder="ENTER PASSWORD">
+<br>
+<button onclick="check()">ENTER</button>
 
 <script>
 
-// BOOT SEQUENCE
-const bootText = [
+const lines = [
   "> BOOTING SYSTEM...",
   "> LOADING MODULES...",
   "> CONNECTING...",
   "> ACCESS NODE FOUND",
-  "> INITIALIZING..."
+  "> INITIALIZING NODE",
+  "> LEVEL: 0",
+  "",
+  "> AUTHENTICATION REQUIRED",
+  "",
+  "01000100 01000001 01001110 01000101",
+  ""
 ];
 
-let bootIndex = 0;
-const bootDiv = document.getElementById("boot");
+const terminal = document.getElementById("terminal");
 
-function runBoot() {
-  if (bootIndex < bootText.length) {
-    const line = document.createElement("div");
-    line.textContent = bootText[bootIndex];
-    bootDiv.appendChild(line);
-    bootIndex++;
-    setTimeout(runBoot, 300);
-  } else {
-    setTimeout(() => {
-      bootDiv.style.display = "none";
-      document.getElementById("mainContent").style.display = "block";
-    }, 500);
-  }
-}
+let lineIndex = 0;
+let charIndex = 0;
 
-runBoot();
+function typeLine() {
+  if (lineIndex < lines.length) {
 
-// TYPE EFFECT
-function typeText(element, text, speed = 20) {
-  element.innerHTML = "";
-  let i = 0;
-
-  function typing() {
-    if (i < text.length) {
-      element.innerHTML += text.charAt(i);
-      i++;
-      setTimeout(typing, speed);
+    if (charIndex < lines[lineIndex].length) {
+      terminal.innerHTML += lines[lineIndex][charIndex];
+      charIndex++;
+      setTimeout(typeLine, 15);
+    } else {
+      terminal.innerHTML += "<br>";
+      lineIndex++;
+      charIndex = 0;
+      setTimeout(typeLine, 200);
     }
-  }
 
-  typing();
+  } else {
+    // pokaż input po zakończeniu
+    document.getElementById("answer").style.display = "inline-block";
+    document.querySelector("button").style.display = "inline-block";
+  }
 }
 
-// CHECK ANSWER
+typeLine();
+
+// CHECK
 function check() {
   const input = document.getElementById("answer").value.toLowerCase().trim();
-  const correct = ["ZGFuZQ==", "ZGF0YQ=="];
-  const result = document.getElementById("result");
 
-  const encoded = btoa(input);
+  if (btoa(input) === "ZGFuZQ==" || btoa(input) === "ZGF0YQ==") {
 
-  
-  if (correct.includes(encoded)) {
+    const message = [
+      "",
+      "> ACCESS GRANTED",
+      "",
+      "Dane stały się najcenniejszym zasobem XXI wieku.",
+      "Każdej sekundy powstają ich ogromne ilości — w mediach społecznościowych, finansach i technologii.",
+      "Każdego dnia ludzkość generuje ponad 400 milionów terabajtów danych.",
+      "",
+      "→ LEVEL 1"
+    ];
 
-    const message =
-`> ACCESS GRANTED
+    lineIndex = 0;
+    charIndex = 0;
 
-Dane stały się najcenniejszym zasobem XXI wieku.
-Każdej sekundy powstają ich ogromne ilości — w mediach społecznościowych, finansach i technologii.
-Każdego dnia ludzkość generuje ponad 400 milionów terabajtów danych.
+    function typeMessage() {
+      if (lineIndex < message.length) {
 
-→ LEVEL 1`;
+        if (charIndex < message[lineIndex].length) {
+          terminal.innerHTML += message[lineIndex][charIndex];
+          charIndex++;
+          setTimeout(typeMessage, 15);
+        } else {
+          terminal.innerHTML += "<br>";
+          lineIndex++;
+          charIndex = 0;
+          setTimeout(typeMessage, 200);
+        }
 
-    typeText(result, message, 15);
+      } else {
+        setTimeout(() => {
+          window.location.href = "level-1.html";
+        }, 2000);
+      }
+    }
 
-    // GLITCH
-    setTimeout(() => {
-      document.body.classList.add("glitch");
-
-      const overlay = document.getElementById("glitchOverlay");
-      overlay.style.opacity = "0.2";
-
-      setTimeout(() => {
-        overlay.style.opacity = "0";
-      }, 100);
-
-    }, 4000);
-
-    // REDIRECT
-    setTimeout(() => {
-      window.location.href = "level-1.html";
-    }, 4700);
+    typeMessage();
 
   } else {
-    result.innerHTML = "> ACCESS DENIED";
-    document.getElementById("answer").classList.add("glitch");
-
-    setTimeout(() => {
-      document.getElementById("answer").classList.remove("glitch");
-    }, 300);
+    terminal.innerHTML += "<br>> ACCESS DENIED<br>";
   }
 }
 

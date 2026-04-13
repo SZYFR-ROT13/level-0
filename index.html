@@ -2,6 +2,7 @@
 <html lang="pl">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>LEVEL 0</title>
 
 <style>
@@ -9,8 +10,17 @@ body {
   background: black;
   color: #00ffcc;
   font-family: monospace;
-  padding: 40px;
-  text-shadow: 0 0 5px #00ffcc;
+  padding: 20px;
+  font-size: 18px; /* 🔥 większa czcionka */
+  text-shadow: 0 0 6px #00ffcc;
+  line-height: 1.5;
+}
+
+/* większa czcionka na telefonach */
+@media (max-width: 600px) {
+  body {
+    font-size: 20px;
+  }
 }
 
 /* cursor */
@@ -23,6 +33,13 @@ body {
   0%, 50%, 100% { opacity: 1; }
   25%, 75% { opacity: 0; }
 }
+
+/* hidden input */
+#hiddenInput {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
 </style>
 </head>
 
@@ -30,14 +47,17 @@ body {
 
 <div id="terminal"></div>
 
+<input id="hiddenInput" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
+
 <script>
 
 const terminal = document.getElementById("terminal");
+const hiddenInput = document.getElementById("hiddenInput");
 
 let input = "";
 let inputActive = false;
 
-// typing lines
+// boot + intro
 const lines = [
   "> BOOTING SYSTEM...",
   "> LOADING MODULES...",
@@ -55,18 +75,19 @@ const lines = [
 let lineIndex = 0;
 let charIndex = 0;
 
+// typing
 function typeLine() {
   if (lineIndex < lines.length) {
 
     if (charIndex < lines[lineIndex].length) {
       terminal.innerHTML += lines[lineIndex][charIndex];
       charIndex++;
-      setTimeout(typeLine, 15);
+      setTimeout(typeLine, 12);
     } else {
       terminal.innerHTML += "<br>";
       lineIndex++;
       charIndex = 0;
-      setTimeout(typeLine, 200);
+      setTimeout(typeLine, 150);
     }
 
   } else {
@@ -76,39 +97,43 @@ function typeLine() {
 
 typeLine();
 
-// ENABLE TERMINAL INPUT
+// input
 function enableInput() {
   inputActive = true;
+  input = "";
   terminal.innerHTML += "> ";
+  hiddenInput.value = "";
+  hiddenInput.focus();
   updateInput();
 }
 
-// UPDATE INPUT LINE
 function updateInput() {
-  const lastLine = terminal.innerHTML.split("<br>");
-  lastLine[lastLine.length - 1] = "> " + input + '<span class="cursor"></span>';
-  terminal.innerHTML = lastLine.join("<br>");
+  const lines = terminal.innerHTML.split("<br>");
+  lines[lines.length - 1] = "> " + input + '<span class="cursor"></span>';
+  terminal.innerHTML = lines.join("<br>");
 }
 
-// KEYBOARD INPUT
-document.addEventListener("keydown", (e) => {
-  if (!inputActive) return;
-
-  if (e.key === "Enter") {
-    processInput();
-  } else if (e.key === "Backspace") {
-    input = input.slice(0, -1);
-  } else if (e.key.length === 1) {
-    input += e.key;
-  }
-
+// mobile-friendly input
+hiddenInput.addEventListener("input", () => {
+  input = hiddenInput.value;
   updateInput();
 });
 
-// PROCESS INPUT
+hiddenInput.addEventListener("keydown", (e) => {
+  if (e.key === "Enter") {
+    e.preventDefault();
+    processInput();
+  }
+});
+
+// klik = focus (ważne na mobile)
+document.addEventListener("click", () => {
+  hiddenInput.focus();
+});
+
+// logika
 function processInput() {
   inputActive = false;
-
   terminal.innerHTML += "<br>";
 
   const value = input.toLowerCase().trim();
@@ -126,7 +151,7 @@ function processInput() {
     ], () => {
       setTimeout(() => {
         window.location.href = "level-1.html";
-      }, 1500);
+      }, 2200);
     });
 
   } else {
@@ -137,7 +162,7 @@ function processInput() {
   }
 }
 
-// TYPE MESSAGE
+// typing messages
 function typeMessage(lines, callback) {
   let i = 0;
   let j = 0;
@@ -147,12 +172,12 @@ function typeMessage(lines, callback) {
       if (j < lines[i].length) {
         terminal.innerHTML += lines[i][j];
         j++;
-        setTimeout(type, 15);
+        setTimeout(type, 12);
       } else {
         terminal.innerHTML += "<br>";
         i++;
         j = 0;
-        setTimeout(type, 200);
+        setTimeout(type, 150);
       }
     } else if (callback) {
       callback();

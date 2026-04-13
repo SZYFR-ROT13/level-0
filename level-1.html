@@ -22,7 +22,6 @@ body {
   }
 }
 
-/* cursor */
 .cursor::after {
   content: "_";
   animation: blink 1s infinite;
@@ -33,7 +32,6 @@ body {
   25%, 75% { opacity: 0; }
 }
 
-/* hidden input */
 #hiddenInput {
   position: absolute;
   opacity: 0;
@@ -56,7 +54,7 @@ let input = "";
 let inputActive = false;
 let step = 0;
 
-// TWOJE ZASZYFROWANE DANE (zostawiasz jak masz)
+// 🔥 WSTAW SWOJE DANE (bez zmian)
 const dataSets = [
 `01011011 00001010 00100000 00100000 01111011 00001010 00100000 00100000 00100000 00100000 00100010 01110110 01110001 00100010 00111010 00100000 00110001 00101100 00001010 00100000 00100000 00100000 00100000 00100010 01110110 01111010 01110110 01110010 00100010 00111010 00100000 00100010 01010111 01101110 01100001 00100010 00101100 00001010 00100000 00100000 00100000 00100000 00100010 01101010 01110110 01110010 01111000 00100010 00111010 00100000 00110010 00110001 00101100 00001010 00100000 00100000 00100000 00100000 00100010 01111010 01110110 01101110 01100110 01100111 01100010 00100010 00111010 00100000 00100010 01011000 01110110 01110010 01111001 01110000 01110010 00100010 00001010 00100000 00100000 01111101 00101100 00001010 00100000 00100000 01111011 00001010 00100000 00100000 00100000 00100000 00100010 01110110 01110001 00100010 00111010 00100000 00110010 00101100 00001010 00100000 00100000 00100000 00100000 00100010 01110110 01111010 01110110 01110010 00100010 00111010 00100000 00100010 01001110 01100001 01100001 01101110 00100010 00101100 00001010 00100000 00100000 00100000 00100000 00100010 01101010 01110110 01110010 01111000 00100010 00111010 00100000 00110001 00111001 00101100 00001010 00100000 00100000 00100000 00100000 00100010 01111010 01110110 01101110 01100110 01100111 01100010 00100010 00111010 00100000 00100010 01011000 01100101 01101110 01111000 01100010 01101010 00100010 00001010 00100000 00100000 01111101 00001010 01011101`,
 
@@ -71,14 +69,29 @@ const questions = [
   "> DEFINING CONCEPT..."
 ];
 
-// zakodowane odpowiedzi
+// zakodowane hasła
 const encodedAnswers = [
   ["anNvbg=="],
   ["dGFibGU=", "dGFiZWxh"],
   ["c3RydWt0dXJh", "c3RydWt0dXJhIGRhbnljaA=="]
 ];
 
-// typing helper
+// komunikaty progresu
+const successMessages = [
+  "> FORMAT RECOGNIZED",
+  "> STRUCTURE DETECTED",
+  "> CONCEPT UNDERSTOOD"
+];
+
+// auto scroll
+function scrollToBottom() {
+  window.scrollTo({
+    top: document.body.scrollHeight,
+    behavior: "smooth"
+  });
+}
+
+// typing
 function typeLines(lines, callback) {
   let i = 0;
   let j = 0;
@@ -87,10 +100,12 @@ function typeLines(lines, callback) {
     if (i < lines.length) {
       if (j < lines[i].length) {
         terminal.innerHTML += lines[i][j];
+        scrollToBottom();
         j++;
         setTimeout(type, 12);
       } else {
         terminal.innerHTML += "<br>";
+        scrollToBottom();
         i++;
         j = 0;
         setTimeout(type, 150);
@@ -110,7 +125,7 @@ typeLines([
   ""
 ], loadStep);
 
-// pokaż dane + pytanie
+// load step
 function loadStep() {
   typeLines([
     questions[step],
@@ -134,6 +149,7 @@ function updateInput() {
   const lines = terminal.innerHTML.split("<br>");
   lines[lines.length - 1] = "> " + input + '<span class="cursor"></span>';
   terminal.innerHTML = lines.join("<br>");
+  scrollToBottom();
 }
 
 // mobile input
@@ -162,27 +178,30 @@ function processInput() {
 
   if (encodedAnswers[step].includes(encoded)) {
 
-    step++;
+    typeLines([
+      successMessages[step],
+      ""
+    ], () => {
 
-    if (step < dataSets.length) {
-      typeLines([
-        "> OK",
-        ""
-      ], loadStep);
-    } else {
-      typeLines([
-        "> ACCESS GRANTED",
-        "",
-        "Struktura porządkuje dane i nadaje im znaczenie.",
-        "Dzięki niej można je efektywnie wykorzystać.",
-        "",
-        "→ LEVEL 2"
-      ], () => {
-        setTimeout(() => {
-          window.location.href = "level-2.html";
-        }, 1200);
-      });
-    }
+      step++;
+
+      if (step < dataSets.length) {
+        loadStep();
+      } else {
+        typeLines([
+          "> ACCESS GRANTED",
+          "",
+          "Struktura porządkuje dane i nadaje im znaczenie.",
+          "Dzięki niej można je efektywnie wykorzystać.",
+          "",
+          "→ LEVEL 2"
+        ], () => {
+          setTimeout(() => {
+            window.location.href = "level-2.html";
+          }, 1200);
+        });
+      }
+    });
 
   } else {
     typeLines(["> ACCESS DENIED"], () => {

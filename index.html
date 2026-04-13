@@ -49,11 +49,16 @@ button {
 
 <script>
 function check() {
-  const input = document.getElementById("answer").value.toLowerCase();
+  const input = document.getElementById("answer").value.toLowerCase().trim();
 
-  if (input === "dane") {
+  if (input === "dane" || input === "data") {
     document.getElementById("result").innerHTML =
-      "> ACCESS GRANTED<br><br>Witaj w świecie danych.<br><br><a href='https://szyfr-rot13.github.io/level-0/' style='color:#00ffcc;'>PRZEJDŹ DALEJ</a>";
+      "> ACCESS GRANTED<br><br>Dane stały się najcenniejszym zasobem XXI wieku.<br>Każdej sekundy powstają ich ogromne ilości — w mediach społecznościowych, finansach i technologii.<br>Każdego dnia ludzkość generuje ponad 400 milionów terabajtów danych.<br><br>→ LEVEL 1";
+
+    setTimeout(() => {
+      window.location.href = "level-1.html";
+    }, 4000);
+
   } else {
     document.getElementById("result").innerHTML = "> ACCESS DENIED";
   }

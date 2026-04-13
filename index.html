@@ -9,7 +9,6 @@ body {
   background: black;
   color: #00ffcc;
   font-family: monospace;
-  text-align: left;
   padding: 40px;
   text-shadow: 0 0 5px #00ffcc;
 }
@@ -24,28 +23,21 @@ body {
   0%, 50%, 100% { opacity: 1; }
   25%, 75% { opacity: 0; }
 }
-
-input, button {
-  display: none;
-  background: black;
-  border: 1px solid #00ffcc;
-  color: #00ffcc;
-  padding: 10px;
-  margin-top: 20px;
-}
 </style>
 </head>
 
 <body>
 
-<div id="terminal" class="cursor"></div>
-
-<input type="text" id="answer" placeholder="ENTER PASSWORD">
-<br>
-<button onclick="check()">ENTER</button>
+<div id="terminal"></div>
 
 <script>
 
+const terminal = document.getElementById("terminal");
+
+let input = "";
+let inputActive = false;
+
+// typing lines
 const lines = [
   "> BOOTING SYSTEM...",
   "> LOADING MODULES...",
@@ -59,8 +51,6 @@ const lines = [
   "01000100 01000001 01001110 01000101",
   ""
 ];
-
-const terminal = document.getElementById("terminal");
 
 let lineIndex = 0;
 let charIndex = 0;
@@ -80,22 +70,52 @@ function typeLine() {
     }
 
   } else {
-    // pokaż input po zakończeniu
-    document.getElementById("answer").style.display = "inline-block";
-    document.querySelector("button").style.display = "inline-block";
+    enableInput();
   }
 }
 
 typeLine();
 
-// CHECK
-function check() {
-  const input = document.getElementById("answer").value.toLowerCase().trim();
+// ENABLE TERMINAL INPUT
+function enableInput() {
+  inputActive = true;
+  terminal.innerHTML += "> ";
+  updateInput();
+}
 
-  if (btoa(input) === "ZGFuZQ==" || btoa(input) === "ZGF0YQ==") {
+// UPDATE INPUT LINE
+function updateInput() {
+  const lastLine = terminal.innerHTML.split("<br>");
+  lastLine[lastLine.length - 1] = "> " + input + '<span class="cursor"></span>';
+  terminal.innerHTML = lastLine.join("<br>");
+}
 
-    const message = [
-      "",
+// KEYBOARD INPUT
+document.addEventListener("keydown", (e) => {
+  if (!inputActive) return;
+
+  if (e.key === "Enter") {
+    processInput();
+  } else if (e.key === "Backspace") {
+    input = input.slice(0, -1);
+  } else if (e.key.length === 1) {
+    input += e.key;
+  }
+
+  updateInput();
+});
+
+// PROCESS INPUT
+function processInput() {
+  inputActive = false;
+
+  terminal.innerHTML += "<br>";
+
+  const value = input.toLowerCase().trim();
+
+  if (btoa(value) === "ZGFuZQ==" || btoa(value) === "ZGF0YQ==") {
+
+    typeMessage([
       "> ACCESS GRANTED",
       "",
       "Dane stały się najcenniejszym zasobem XXI wieku.",
@@ -103,37 +123,43 @@ function check() {
       "Każdego dnia ludzkość generuje ponad 400 milionów terabajtów danych.",
       "",
       "→ LEVEL 1"
-    ];
-
-    lineIndex = 0;
-    charIndex = 0;
-
-    function typeMessage() {
-      if (lineIndex < message.length) {
-
-        if (charIndex < message[lineIndex].length) {
-          terminal.innerHTML += message[lineIndex][charIndex];
-          charIndex++;
-          setTimeout(typeMessage, 15);
-        } else {
-          terminal.innerHTML += "<br>";
-          lineIndex++;
-          charIndex = 0;
-          setTimeout(typeMessage, 200);
-        }
-
-      } else {
-        setTimeout(() => {
-          window.location.href = "level-1.html";
-        }, 2000);
-      }
-    }
-
-    typeMessage();
+    ], () => {
+      setTimeout(() => {
+        window.location.href = "level-1.html";
+      }, 1500);
+    });
 
   } else {
-    terminal.innerHTML += "<br>> ACCESS DENIED<br>";
+    typeMessage(["> ACCESS DENIED"], () => {
+      input = "";
+      enableInput();
+    });
   }
+}
+
+// TYPE MESSAGE
+function typeMessage(lines, callback) {
+  let i = 0;
+  let j = 0;
+
+  function type() {
+    if (i < lines.length) {
+      if (j < lines[i].length) {
+        terminal.innerHTML += lines[i][j];
+        j++;
+        setTimeout(type, 15);
+      } else {
+        terminal.innerHTML += "<br>";
+        i++;
+        j = 0;
+        setTimeout(type, 200);
+      }
+    } else if (callback) {
+      callback();
+    }
+  }
+
+  type();
 }
 
 </script>

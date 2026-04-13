@@ -1,42 +1,47 @@
 <!DOCTYPE html>
 <html lang="pl">
 <head>
-  <meta charset="UTF-8">
-  <title>LEVEL 0</title>
-  <style>
-    body {
-      background: black;
-      color: #00ffcc;
-      font-family: monospace;
-      text-align: center;
-      padding-top: 100px;
-    }
-    input {
-      background: black;
-      border: 1px solid #00ffcc;
-      color: #00ffcc;
-      padding: 10px;
-      margin-top: 20px;
-    }
-    button {
-      background: #00ffcc;
-      border: none;
-      padding: 10px;
-      margin-top: 10px;
-      cursor: pointer;
-    }
-  </style>
+<meta charset="UTF-8">
+<title>LEVEL 0</title>
+
+<style>
+body {
+  background: black;
+  color: #00ffcc;
+  font-family: monospace;
+  text-align: center;
+  padding-top: 10%;
+}
+
+input {
+  background: black;
+  border: 1px solid #00ffcc;
+  color: #00ffcc;
+  padding: 10px;
+  margin-top: 20px;
+}
+
+button {
+  background: #00ffcc;
+  color: black;
+  border: none;
+  padding: 10px;
+  margin-top: 10px;
+  cursor: pointer;
+}
+</style>
 </head>
+
 <body>
 
-<h1>> SYSTEM ONLINE</h1>
-<p>> CURRENT LEVEL: 0</p>
-<p>> USER: SZYFT_ROT13</p>
+<h2>> INITIALIZING NODE</h2>
+<h3>> LEVEL: 0</h3>
 
-<p>Odszyfruj:</p>
+<p>> AUTHENTICATION REQUIRED</p>
+
 <p><b>VAFMLAREVN QNALGREF</b></p>
 
-<input type="text" id="answer" placeholder="Wpisz hasło">
+<input type="text" id="answer" placeholder="ENTER PASSWORD">
 <br>
 <button onclick="check()">ENTER</button>
 
@@ -45,8 +50,10 @@
 <script>
 function check() {
   const input = document.getElementById("answer").value.toLowerCase();
+
   if (input === "inzynieria danych") {
-    document.getElementById("result").innerHTML = "> ACCESS GRANTED<br>→ https://tu-wkleisz-link-do-uczelni.pl";
+    document.getElementById("result").innerHTML =
+      "> ACCESS GRANTED<br><br>Witaj w świecie danych.<br><br><a href='https://twoja-uczelnia.pl' style='color:#00ffcc;'>PRZEJDŹ DALEJ</a>";
   } else {
     document.getElementById("result").innerHTML = "> ACCESS DENIED";
   }

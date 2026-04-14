@@ -92,10 +92,13 @@ function playTyping() {
 
 // 🔽 SCROLL
 function scrollToBottom() {
-  window.scrollTo({
-    top: document.body.scrollHeight,
-    behavior: "smooth"
-  });
+  const el = document.getElementById("terminal");
+
+  // instant scroll (more reliable on mobile)
+  el.scrollTop = el.scrollHeight;
+
+  // fallback for full page scroll
+  window.scrollTo(0, document.body.scrollHeight);
 }
 
 // 🔽 TYPE EFFECT
@@ -123,8 +126,9 @@ function typeLines(lines, callback) {
           setTimeout(type, 0);
           return;
         }
-
         terminal.innerHTML += lines[i][j];
+        // force layout update for smoother mobile rendering
+        terminal.offsetHeight;
         if(Math.random() < 0.5) playTyping();
 
         scrollToBottom();

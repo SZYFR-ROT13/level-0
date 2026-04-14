@@ -144,4 +144,6 @@ body::after {
   overflow-wrap: anywhere;
   font-family: monospace;
   letter-spacing: 0;
+  height: 100vh;
+  overflow-y: auto;
 }

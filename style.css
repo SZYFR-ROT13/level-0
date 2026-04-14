@@ -10,6 +10,8 @@ body {
   line-height: 1.5;
   height: 100vh;
   overflow: hidden;
+  display: flex;
+  flex-direction: column;
 }
 
 /* mobile */
@@ -147,6 +149,6 @@ body::after {
   overflow-wrap: anywhere;
   font-family: monospace;
   letter-spacing: 0;
-  height: 100%;
+  flex: 1;
   overflow-y: auto;
 }

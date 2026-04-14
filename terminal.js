@@ -260,6 +260,18 @@ document.addEventListener("keydown", (e) => {
     fastForward = true;
   }
 });
+
+// 📱 Auto scroll when keyboard opens (mobile)
+window.addEventListener("resize", () => {
+  scrollToBottom();
+});
+
+// 📱 Tap screen to fast-forward typing
+terminal.addEventListener("touchstart", () => {
+  if (isTyping) {
+    fastForward = true;
+  }
+});
 function playPyramidAnimation(callback) {
 
   const frames = [

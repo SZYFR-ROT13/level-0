@@ -8,10 +8,11 @@ body {
   font-size: 18px;
   text-shadow: 0 0 6px #00ffcc, 0 0 14px #00ffcc;
   line-height: 1.5;
-  height: 100vh;
+  height: 100dvh;
   overflow: hidden;
   display: flex;
   flex-direction: column;
+  padding-bottom: 60px;
 }
 
 /* mobile */
@@ -151,4 +152,5 @@ body::after {
   letter-spacing: 0;
   flex: 1;
   overflow-y: auto;
+  padding-bottom: 80px;
 }

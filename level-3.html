@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8">
+  <title>Level 3</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div id="terminal"></div>
+<input id="hiddenInput" autofocus />
+
+<script src="terminal.js"></script>
+<script>
+
+// 📁 VIRTUAL FILE SYSTEM
+const fileSystem = {
+  "tu.kielce": {
+    "polibuda": {
+      "WBiA": {
+        "dziekanat": {},
+        "Architektura": {},
+        "Budownictwo": {}
+      },
+      "WEAiI": {
+        "dziekanat": {},
+        "Automatyka_i_elektrotechnika_przemyslowa": {},
+        "Elektromobilnosc": {},
+        "Elektrotechnika": {},
+        "Energetyka": {},
+        "Informatyka": {},
+        "Teleinformatyka": {}
+      },
+      "WISGiE": {
+        "dziekanat": {},
+        "Inzynieria_srodowiska": {},
+        "Geodezja_i_kartografia": {},
+        "Odnawialne_zrodla_energii": {}
+      },
+      "WMiBM": {
+        "dziekanat": {},
+        "Automatyka_i_robotyka": {},
+        "Informatyka_przemyslowa": {},
+        "Inzynieria_bezpieczenstwa": {},
+        "Inzynieria_srodkow_transportu": {},
+        "Mechanika_i_budowa_maszyn": {},
+        "Wzornictwo_przemyslowe": {}
+      },
+      "WZiMK": {
+        "dziekanat": {},
+        "Ekonomia": {},
+        "Inzynieria_biomedyczna": {},
+        "Inzynieria_danych": {},
+        "Logistyka": {},
+        "Zarzadzanie_biznesowe": {},
+        "Inzynieria_zarzadzania_produkcja_i_jakoscia": {}
+      }
+    },
+    "akademiki": {
+      "FILON": {},
+      "LAURA": {},
+      "BARTEK": {},
+      "ASYSTENT": {},
+      "MIMOZA": {},
+      "PROTON": {}
+    },
+    "pod_krecha": {},
+    "hala_sportowa": {}
+  }
+};
+
+let currentPath = ["tu.kielce"];
+
+function getCurrentDir() {
+  let dir = fileSystem;
+  for (let p of currentPath) {
+    dir = dir[p];
+  }
+  return dir;
+}
+
+function printPath() {
+  return currentPath.join("/");
+}
+
+function showPrompt() {
+  enableInput(handleInput, printPath() + "> ");
+}
+
+function handleInput(input) {
+  const args = input.trim().split(" ");
+  const target = args.slice(1).join("_");
+  const command = args[0];
+
+  const dir = getCurrentDir();
+
+  if (command === "ls") {
+    const items = Object.keys(dir);
+    const terminal = document.getElementById("terminal");
+    typeLines(items, () => {
+      showPrompt();
+    });
+  }
+
+  else if (command === "cd") {
+    if (!target) {
+      const terminal = document.getElementById("terminal");
+      typeLines(["usage: cd <folder>"], () => {
+        showPrompt();
+      });
+      return;
+    }
+
+    if (target === "..") {
+      if (currentPath.length > 1) currentPath.pop();
+    }
+    else if (dir[target]) {
+      currentPath.push(target);
+
+      // 🎬 special case: Inzynieria_danych
+      const normalizedTarget = target.toLowerCase();
+
+      if (normalizedTarget === "inzynieria_danych") {
+        const terminal = document.getElementById("terminal");
+
+        // najpierw animacja piramidki
+        playPyramidAnimation(() => {
+
+          // po animacji wyczyść terminal
+          terminal.innerHTML = "";
+
+          // pokaż video
+          const video = document.createElement("div");
+          video.style.marginTop = "20px";
+
+          video.innerHTML = `
+            <iframe width="1000" height="560" src="https://www.youtube.com/embed/EJnh5cLVCtE" 
+            title="Inżynieria danych" frameborder="0" 
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+            allowfullscreen></iframe>
+          `;
+
+          terminal.appendChild(video);
+        });
+
+        return; // zatrzymaj dalsze wykonywanie
+      }
+    } else {
+      const terminal = document.getElementById("terminal");
+      typeLines(["folder not found"], () => {
+        showPrompt();
+      });
+      return;
+    }
+
+    const terminal = document.getElementById("terminal");
+    showPrompt();
+  }
+
+  else if (command === "pwd") {
+    const terminal = document.getElementById("terminal");
+    typeLines([printPath()], () => {
+      showPrompt();
+    });
+  }
+
+  else if (command === "help") {
+    const terminal = document.getElementById("terminal");
+    typeLines([
+      "available commands:",
+      "ls",
+      "cd <folder>",
+      "cd ..",
+      "pwd"
+    ], () => {
+      showPrompt();
+    });
+  }
+
+  else {
+    const terminal = document.getElementById("terminal");
+    typeLines([
+      "command not found",
+      "type help"
+    ], () => {
+      showPrompt();
+    });
+  }
+}
+
+// 🚀 START
+
+showBootScreen(() => {
+  typeLines([
+    "> CONNECTING TO FILE SYSTEM...",
+    "> ROOT: tu.kielce",
+    ""
+  ], () => {
+    showPrompt();
+  });
+});
+
+</script>
+
+</body>
+</html>

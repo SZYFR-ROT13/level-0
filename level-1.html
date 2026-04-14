@@ -1,216 +1,133 @@
 <!DOCTYPE html>
 <html lang="pl">
+
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>LEVEL 1</title>
-
-<style>
-body {
-  background: black;
-  color: #00ffcc;
-  font-family: monospace;
-  padding: 20px;
-  font-size: 18px;
-  text-shadow: 0 0 6px #00ffcc;
-  line-height: 1.5;
-}
-
-@media (max-width: 600px) {
-  body {
-    font-size: 20px;
-  }
-}
-
-.cursor::after {
-  content: "_";
-  animation: blink 1s infinite;
-}
-
-@keyframes blink {
-  0%, 50%, 100% { opacity: 1; }
-  25%, 75% { opacity: 0; }
-}
-
-#hiddenInput {
-  position: absolute;
-  opacity: 0;
-  pointer-events: none;
-}
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LEVEL 1</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
 
-<div id="terminal"></div>
-<input id="hiddenInput" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
+  <div id="terminal"></div>
+  <input id="hiddenInput" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
 
-<script>
+  <script src="terminal.js"></script>
+  <script>
+    let step = 0;
 
-const terminal = document.getElementById("terminal");
-const hiddenInput = document.getElementById("hiddenInput");
+    const dataSets = [
+      `[
+  {
+    "vq": 1,
+    "vzvr": "Wna",
+    "jvrx": 21,
+    "zvnfgb": "Xvrypr"
+  },
+  {
+    "vq": 2,
+    "vzvr": "Naan",
+    "jvrx": 19,
+    "zvnfgb": "Xenxbj"
+  }
+]`,
+      `| vq | vzvr  | jvrx | zvnfgb |
+|----|-------|------|--------|
+| 1  | Wna   | 21   | Xvrypr |
+| 2  | Naan  | 19   | Xenxbj |`,
+      `fcbfóo betnavmbjnavn v cemrpubjljnavn qnalpu,
+xgóel hzbżyvjvn vpu rsrxgljar jlxbemlfgnavr v cemrgjnemnavr.`
+    ];
 
-let input = "";
-let inputActive = false;
-let step = 0;
+    const questions = [
+      "> ANALYZING DATA FORMAT...",
+      "> ANALYZING DATA REPRESENTATION...",
+      "> DEFINING CONCEPT..."
+    ];
 
-// 🔥 WSTAW SWOJE DANE (bez zmian)
-const dataSets = [
-`01011011 00001010 00100000 00100000 01111011 00001010 00100000 00100000 00100000 00100000 00100010 01110110 01110001 00100010 00111010 00100000 00110001 00101100 00001010 00100000 00100000 00100000 00100000 00100010 01110110 01111010 01110110 01110010 00100010 00111010 00100000 00100010 01010111 01101110 01100001 00100010 00101100 00001010 00100000 00100000 00100000 00100000 00100010 01101010 01110110 01110010 01111000 00100010 00111010 00100000 00110010 00110001 00101100 00001010 00100000 00100000 00100000 00100000 00100010 01111010 01110110 01101110 01100110 01100111 01100010 00100010 00111010 00100000 00100010 01011000 01110110 01110010 01111001 01110000 01110010 00100010 00001010 00100000 00100000 01111101 00101100 00001010 00100000 00100000 01111011 00001010 00100000 00100000 00100000 00100000 00100010 01110110 01110001 00100010 00111010 00100000 00110010 00101100 00001010 00100000 00100000 00100000 00100000 00100010 01110110 01111010 01110110 01110010 00100010 00111010 00100000 00100010 01001110 01100001 01100001 01101110 00100010 00101100 00001010 00100000 00100000 00100000 00100000 00100010 01101010 01110110 01110010 01111000 00100010 00111010 00100000 00110001 00111001 00101100 00001010 00100000 00100000 00100000 00100000 00100010 01111010 01110110 01101110 01100110 01100111 01100010 00100010 00111010 00100000 00100010 01011000 01100101 01101110 01111000 01100010 01101010 00100010 00001010 00100000 00100000 01111101 00001010 01011101`,
+    const encodedAnswers = [
+      ["anNvbg=="],
+      ["dGFibGU=", "dGFiZWxh", "dGFibGljYQ=="],
+      [
+        "c3RydWt0dXJh",
+        "c3RydWt0dXJhIGRhbnljaA==",
+        "c3RydWt0dXJ5",
+        "c3RydWt0dXJ5IGRhbnljaA==",
+        "c3R1Y3R1cmU=",
+        "ZGF0YSBzdHJ1Y3R1cmU="
+      ]
+    ];
 
-`01111100 00100000 01110110 01110001 00100000 01111100 00100000 01110110 01111010 01110110 01110010 00100000 00100000 01111100 00100000 01101010 01110110 01110010 01111000 00100000 01111100 00100000 01111010 01110110 01101110 01100110 01100111 01100010 00100000 01111100 00001010 01111100 00101101 00101101 00101101 00101101 01111100 00101101 00101101 00101101 00101101 00101101 00101101 00101101 01111100 00101101 00101101 00101101 00101101 00101101 00101101 01111100 00101101 00101101 00101101 00101101 00101101 00101101 00101101 00101101 01111100 00001010 01111100 00100000 00110001 00100000 00100000 01111100 00100000 01010111 01101110 01100001 00100000 00100000 00100000 01111100 00100000 00110010 00110001 00100000 00100000 00100000 01111100 00100000 01011000 01110110 01110010 01111001 01110000 01110010 00100000 01111100 00001010 01111100 00100000 00110010 00100000 00100000 01111100 00100000 01001110 01100001 01100001 01101110 00100000 00100000 01111100 00100000 00110001 00111001 00100000 00100000 00100000 01111100 00100000 01011000 01100101 01101110 01111000 01100010 01101010 00100000 01111100`,
+    const successMessages = [
+      "> DATA FORMAT RECOGNIZED",
+      "> DATA REPRESENTATION RECOGNIZED",
+      "> CONCEPT RECOGNIZED"
+    ];
 
-`01000110 01100111 01100101 01101000 01111000 01100111 01101000 01100101 01101110 00100000 01110001 01101110 01100001 01101100 01110000 01110101 00100000 01100111 01100010 00100000 01100110 01100011 01100010 01100110 11000011 10110011 01101111 00100000 01100010 01100101 01110100 01101110 01100001 01110110 01101101 01100010 01101010 01101110 01100001 01110110 01101110 00100000 01110110 00100000 01100011 01100101 01101101 01110010 01110000 01110101 01100010 01101010 01101100 01101010 01101110 01100001 01110110 01101110 00100000 01110001 01101110 01100001 01101100 01110000 01110101 00101100 00001010 01111000 01100111 11000011 10110011 01100101 01101100 00100000 01101000 01111010 01100010 11000101 10111100 01111001 01110110 01101010 01110110 01101110 00100000 01110110 01110000 01110101 00100000 01110010 01110011 01110010 01111000 01100111 01101100 01101010 01100001 01110010 00100000 01101010 01101100 01111000 01100010 01100101 01101101 01101100 01100110 01100111 01101110 01100001 01110110 01110010 00100000 01110110 00100000 01100011 01100101 01101101 01110010 01100111 01101010 01101110 01100101 01101101 01101110 01100001 01110110 01110010 00101110`
-];
+    function loadStep() {
+      const dataLines = dataSets[step]
+        .split("\n")
+        .map(line => line.replace(/^\s+/g, spaces => "\u00A0".repeat(spaces.length)));
 
-const questions = [
-  "> ANALYZING DATA FORMAT...",
-  "> ANALYZING DATA REPRESENTATION...",
-  "> DEFINING CONCEPT..."
-];
-
-// zakodowane hasła
-const encodedAnswers = [
-  ["anNvbg=="],
-  ["dGFibGU=", "dGFiZWxh"],
-  ["c3RydWt0dXJh", "c3RydWt0dXJhIGRhbnljaA=="]
-];
-
-// komunikaty progresu
-const successMessages = [
-  "> FORMAT RECOGNIZED",
-  "> STRUCTURE DETECTED",
-  "> CONCEPT UNDERSTOOD"
-];
-
-// auto scroll
-function scrollToBottom() {
-  window.scrollTo({
-    top: document.body.scrollHeight,
-    behavior: "smooth"
-  });
-}
-
-// typing
-function typeLines(lines, callback) {
-  let i = 0;
-  let j = 0;
-
-  function type() {
-    if (i < lines.length) {
-      if (j < lines[i].length) {
-        terminal.innerHTML += lines[i][j];
-        scrollToBottom();
-        j++;
-        setTimeout(type, 12);
-      } else {
-        terminal.innerHTML += "<br>";
-        scrollToBottom();
-        i++;
-        j = 0;
-        setTimeout(type, 150);
-      }
-    } else if (callback) {
-      callback();
+      typeLines([
+        questions[step],
+        "",
+        ...dataLines.map(line => line.replace(/ /g, "\u00A0")),
+        ""
+      ], () => {
+        enableInput(handleInput);
+      });
     }
-  }
 
-  type();
-}
+    function handleInput(value) {
+      const encoded = btoa(value.toLowerCase().trim());
 
-// start
-typeLines([
-  "> INITIALIZING NODE...",
-  "> LEVEL: 1",
-  ""
-], loadStep);
+      if (encodedAnswers[step].includes(encoded)) {
 
-// load step
-function loadStep() {
-  typeLines([
-    questions[step],
-    "",
-    dataSets[step],
-    ""
-  ], enableInput);
-}
+        triggerSuccess();
 
-// input
-function enableInput() {
-  inputActive = true;
-  input = "";
-  terminal.innerHTML += "> ";
-  hiddenInput.value = "";
-  hiddenInput.focus();
-  updateInput();
-}
-
-function updateInput() {
-  const lines = terminal.innerHTML.split("<br>");
-  lines[lines.length - 1] = "> " + input + '<span class="cursor"></span>';
-  terminal.innerHTML = lines.join("<br>");
-  scrollToBottom();
-}
-
-// mobile input
-hiddenInput.addEventListener("input", () => {
-  input = hiddenInput.value;
-  updateInput();
-});
-
-hiddenInput.addEventListener("keydown", (e) => {
-  if (e.key === "Enter") {
-    e.preventDefault();
-    processInput();
-  }
-});
-
-document.addEventListener("click", () => {
-  hiddenInput.focus();
-});
-
-// logika
-function processInput() {
-  inputActive = false;
-  terminal.innerHTML += "<br>";
-
-  const encoded = btoa(input.toLowerCase().trim());
-
-  if (encodedAnswers[step].includes(encoded)) {
-
-    typeLines([
-      successMessages[step],
-      ""
-    ], () => {
-
-      step++;
-
-      if (step < dataSets.length) {
-        loadStep();
-      } else {
         typeLines([
-          "> ACCESS GRANTED",
-          "",
-          "Struktura porządkuje dane i nadaje im znaczenie.",
-          "Dzięki niej można je efektywnie wykorzystać.",
-          "",
-          "→ LEVEL 2"
+          successMessages[step],
+          ""
         ], () => {
-          setTimeout(() => {
-            window.location.href = "level-2.html";
-          }, 2200);
+          step++;
+
+          if (step < dataSets.length) {
+            loadStep();
+          } else {
+            typeLines([
+              "> ACCESS GRANTED",
+              "",
+              "Struktura porządkuje dane i nadaje im znaczenie.",
+              "Dzięki niej można je efektywnie wykorzystać.",
+              "",
+              "→ LEVEL 2"
+            ], () => {
+
+              goToLevel("level-2.html");
+            });
+          }
+        });
+
+      } else {
+        triggerErrorGlitch();
+
+        typeLines(["> ACCESS DENIED"], () => {
+          enableInput(handleInput);
         });
       }
-    });
+    }
 
-  } else {
-    typeLines(["> ACCESS DENIED"], () => {
-      enableInput();
+    showBootScreen(() => {
+      typeLines([
+        "> INITIALIZING NODE...",
+        "> LEVEL: 1",
+        ""
+      ], loadStep);
     });
-  }
-}
-
-</script>
+  </script>
 
 </body>
+
 </html>

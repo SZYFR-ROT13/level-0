@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LEVEL 2</title>
+<link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<div id="terminal"></div>
+<input id="hiddenInput" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
+
+<script src="terminal.js"></script>
+<script>
+
+let data = [
+  { name: "Anna", age: 23, city: "Warsaw" },
+  { name: "Tom", age: 31, city: "Krakow" },
+  { name: "Kate", age: 19, city: "Gdansk" },
+  { name: "John", age: 45, city: "Wroclaw" },
+  { name: "Maria", age: 28, city: "Poznan" },
+  { name: "Liam", age: 34, city: "Lodz" },
+  { name: "Eva", age: 22, city: "Szczecin" }
+];
+
+let stage = 1;
+
+function formatTable(dataArray) {
+  const nameWidth = Math.max(...dataArray.map(d => d.name.length), 4);
+  const ageWidth = Math.max(...dataArray.map(d => String(d.age).length), 3);
+  const cityWidth = Math.max(...dataArray.map(d => d.city.length), 4);
+
+  const header =
+    `${"name".padEnd(nameWidth)} | ` +
+    `${"age".padEnd(ageWidth)} | ` +
+    `${"city".padEnd(cityWidth)}`;
+
+  const rows = dataArray.map(d =>
+    `${d.name.padEnd(nameWidth)} | ` +
+    `${String(d.age).padEnd(ageWidth)} | ` +
+    `${d.city.padEnd(cityWidth)}`
+  );
+
+  const separator =
+    `${"-".repeat(nameWidth)}-+-` +
+    `${"-".repeat(ageWidth)}-+-` +
+    `${"-".repeat(cityWidth)}`;
+
+  return [header, separator, ...rows];
+}
+
+// 🔽 START
+showBootScreen(() => {
+  typeLines([
+    "> INITIALIZING NODE...",
+    "> LEVEL: 2",
+    "",
+    "> DATA PROCESSING MODULE",
+    "",
+    ...formatTable(data)
+  ], () => {
+    enableInput(handleInput);
+  });
+});
+
+// 🔽 INPUT
+function handleInput(value) {
+  const input = value.toLowerCase().trim();
+  const normalized = input.replace(/^sort\s+--?/, "sort ");
+
+  // 🔹 HELP
+  if (input === "help") {
+
+    let commands;
+
+    if (stage === 1) {
+      commands = [
+        "> AVAILABLE COMMANDS:",
+        "sort by <field>",
+        "",
+        "> FIELDS:",
+        "name | age | city"
+      ];
+    } else if (stage === 2) {
+      commands = [
+        "> AVAILABLE COMMANDS:",
+        "filter <field> <operator> <value>",
+        "",
+        "> FIELDS:",
+        "name | age | city",
+        "",
+        "> OPERATORS:",
+        "= | > | < | >= | <="
+      ];
+    } else {
+      commands = [
+        "> AVAILABLE COMMANDS:",
+        "drop database"
+      ];
+    }
+
+    typeLines(commands, () => {
+      enableInput(handleInput);
+    });
+  }
+
+  // 🔹 SORT
+  else if (normalized === "sort by age" || normalized === "sort by city" || normalized === "sort by name") {
+
+    triggerSuccess();
+    stage = 2;
+
+    let result;
+
+    if (normalized === "sort by age") {
+      result = [...data].sort((a, b) => a.age - b.age);
+    }
+    else if (normalized === "sort by city") {
+      result = [...data].sort((a, b) => a.city.localeCompare(b.city));
+    }
+    else {
+      result = [...data].sort((a, b) => a.name.localeCompare(b.name));
+    }
+
+    typeLines([
+      `> SORTING BY ${normalized.split(" ")[2].toUpperCase()}...`,
+      "",
+      ...formatTable(result)
+    ], () => {
+      enableInput(handleInput);
+    });
+  }
+
+  // 🔹 FILTER
+  else if (input.startsWith("filter")) {
+
+    const match = input.match(/filter\s+(\w+)\s*(=|>|<|>=|<=)\s*(\w+)/);
+
+    if (!match) { 
+      triggerErrorGlitch();
+      typeLines([
+        "> INVALID FILTER FORMAT",
+        "",
+        "> TYPE 'help'"
+      ], () => {
+        enableInput(handleInput);
+      });
+      return;
+    }
+
+    const [, field, operator, valueRaw] = match;
+
+    let value = isNaN(valueRaw) ? valueRaw.toLowerCase() : Number(valueRaw);
+
+    triggerSuccess();
+    stage = 3;
+
+    const result = data.filter(d => {
+      let fieldValue = d[field];
+
+      if (typeof fieldValue === "string") {
+        fieldValue = fieldValue.toLowerCase();
+      }
+
+      if (fieldValue === undefined) return false;
+
+      switch (operator) {
+        case "=": return fieldValue == value;
+        case ">": return fieldValue > value;
+        case "<": return fieldValue < value;
+        case ">=": return fieldValue >= value;
+        case "<=": return fieldValue <= value;
+        default: return false;
+      }
+    });
+
+    typeLines([
+      `> FILTER APPLIED (${field} ${operator} ${value})`,
+      "",
+      ...formatTable(result)
+    ], () => {
+      enableInput(handleInput);
+    });
+  }
+
+  // 🔹 DROP DATABASE
+  else if (input === "drop database") {
+
+    triggerSuccess();
+
+    typeLines([
+      "> WARNING...",
+      "> DELETING DATA...",
+      "",
+      "> SYSTEM OVERRIDE",
+      "",
+      "Dane same w sobie nie mają wartości.",
+      "Dopiero ich przetwarzanie pozwala odkrywać wzorce, zależności i podejmować decyzje.",
+      "",
+      "> ACCESS GRANTED",
+      "",
+      "→ LEVEL 3"
+    ], () => {
+
+      goToLevel("level-3.html");
+
+    });
+  }
+
+  // ❌ ERROR
+  else {
+    triggerErrorGlitch();
+
+    typeLines([
+      "> INVALID COMMAND",
+      "",
+      "> TYPE 'help'"
+    ], () => {
+      enableInput(handleInput);
+    });
+  }
+}
+
+</script>
+
+</body>
+</html>

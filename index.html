@@ -4,43 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>LEVEL 0</title>
-
-<style>
-body {
-  background: black;
-  color: #00ffcc;
-  font-family: monospace;
-  padding: 20px;
-  font-size: 18px; /* 🔥 większa czcionka */
-  text-shadow: 0 0 6px #00ffcc;
-  line-height: 1.5;
-}
-
-/* większa czcionka na telefonach */
-@media (max-width: 600px) {
-  body {
-    font-size: 20px;
-  }
-}
-
-/* cursor */
-.cursor::after {
-  content: "_";
-  animation: blink 1s infinite;
-}
-
-@keyframes blink {
-  0%, 50%, 100% { opacity: 1; }
-  25%, 75% { opacity: 0; }
-}
-
-/* hidden input */
-#hiddenInput {
-  position: absolute;
-  opacity: 0;
-  pointer-events: none;
-}
-</style>
+<link rel="stylesheet" href="style.css">
 </head>
 
 <body>
@@ -49,144 +13,63 @@ body {
 
 <input id="hiddenInput" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
 
+<script src="terminal.js"></script>
 <script>
+  // LEVEL 0 logic using terminal engine
 
-const terminal = document.getElementById("terminal");
-const hiddenInput = document.getElementById("hiddenInput");
+  showBootScreen(() => {
 
-let input = "";
-let inputActive = false;
-
-// boot + intro
-const lines = [
-  "> BOOTING SYSTEM...",
-  "> LOADING MODULES...",
-  "> CONNECTING...",
-  "> ACCESS NODE FOUND",
-  "> INITIALIZING NODE",
-  "> LEVEL: 0",
-  "",
-  "> AUTHENTICATION REQUIRED",
-  "",
-  "01000100 01000001 01001110 01000101",
-  ""
-];
-
-let lineIndex = 0;
-let charIndex = 0;
-
-// typing
-function typeLine() {
-  if (lineIndex < lines.length) {
-
-    if (charIndex < lines[lineIndex].length) {
-      terminal.innerHTML += lines[lineIndex][charIndex];
-      charIndex++;
-      setTimeout(typeLine, 12);
-    } else {
-      terminal.innerHTML += "<br>";
-      lineIndex++;
-      charIndex = 0;
-      setTimeout(typeLine, 150);
-    }
-
-  } else {
-    enableInput();
-  }
-}
-
-typeLine();
-
-// input
-function enableInput() {
-  inputActive = true;
-  input = "";
-  terminal.innerHTML += "> ";
-  hiddenInput.value = "";
-  hiddenInput.focus();
-  updateInput();
-}
-
-function updateInput() {
-  const lines = terminal.innerHTML.split("<br>");
-  lines[lines.length - 1] = "> " + input + '<span class="cursor"></span>';
-  terminal.innerHTML = lines.join("<br>");
-}
-
-// mobile-friendly input
-hiddenInput.addEventListener("input", () => {
-  input = hiddenInput.value;
-  updateInput();
-});
-
-hiddenInput.addEventListener("keydown", (e) => {
-  if (e.key === "Enter") {
-    e.preventDefault();
-    processInput();
-  }
-});
-
-// klik = focus (ważne na mobile)
-document.addEventListener("click", () => {
-  hiddenInput.focus();
-});
-
-// logika
-function processInput() {
-  inputActive = false;
-  terminal.innerHTML += "<br>";
-
-  const value = input.toLowerCase().trim();
-
-  if (btoa(value) === "ZGFuZQ==" || btoa(value) === "ZGF0YQ==") {
-
-    typeMessage([
-      "> ACCESS GRANTED",
+    typeLines([
+      "> BOOTING SYSTEM...",
+      "> LOADING MODULES...",
+      "> CONNECTING...",
+      "> ACCESS NODE FOUND",
+      "> INITIALIZING NODE",
+      "> LEVEL: 0",
       "",
-      "Dane stały się najcenniejszym zasobem XXI wieku.",
-      "Każdej sekundy powstają ich ogromne ilości — w mediach społecznościowych, finansach i technologii.",
-      "Każdego dnia ludzkość generuje ponad 400 milionów terabajtów danych.",
+      "> AUTHENTICATION REQUIRED",
       "",
-      "→ LEVEL 1"
+      "01000100 01000001 01001110 01000101",
+      ""
     ], () => {
-      setTimeout(() => {
-        window.location.href = "level-1.html";
-      }, 2200);
-    });
 
-  } else {
-    typeMessage(["> ACCESS DENIED"], () => {
-      input = "";
-      enableInput();
-    });
-  }
-}
+      const handleInput = (value) => {
+      const encoded = btoa(value.toLowerCase().trim());
 
-// typing messages
-function typeMessage(lines, callback) {
-  let i = 0;
-  let j = 0;
+      if (encoded === "ZGFuZQ==" || encoded === "ZGF0YQ==") {
 
-  function type() {
-    if (i < lines.length) {
-      if (j < lines[i].length) {
-        terminal.innerHTML += lines[i][j];
-        j++;
-        setTimeout(type, 12);
+        triggerSuccess();
+
+        typeLines([
+          "> ACCESS GRANTED",
+          "",
+          "Dane stały się najcenniejszym zasobem XXI wieku.",
+          "Każdej sekundy powstają ich ogromne ilości — w mediach społecznościowych, finansach i technologii.",
+          "Każdego dnia ludzkość generuje ponad 400 milionów terabajtów danych.",
+          "",
+          "→ LEVEL 1"
+        ], () => {
+
+          goToLevel("level-1.html");
+
+        });
+
       } else {
-        terminal.innerHTML += "<br>";
-        i++;
-        j = 0;
-        setTimeout(type, 150);
+
+        triggerErrorGlitch();
+
+        typeLines(["> ACCESS DENIED"], () => {
+          enableInput(handleInput);
+        });
+
       }
-    } else if (callback) {
-      callback();
-    }
-  }
+    };
 
-  type();
-}
+      enableInput(handleInput);
 
+    });
+
+  });
 </script>
 
 </body>

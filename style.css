@@ -1,0 +1,145 @@
+/* TERMINAL UI SYSTEM */
+
+body {
+  background: black;
+  color: #00ffcc;
+  font-family: monospace;
+  padding: 20px;
+  font-size: 18px;
+  text-shadow: 0 0 6px #00ffcc, 0 0 14px #00ffcc;
+  line-height: 1.5;
+}
+
+/* mobile */
+@media (max-width: 600px) {
+  body {
+    font-size: 20px;
+  }
+}
+
+/* cursor */
+.cursor::after {
+  content: "_";
+  animation: blink 1s infinite;
+}
+
+@keyframes blink {
+  0%, 50%, 100% { opacity: 1; }
+  25%, 75% { opacity: 0; }
+}
+
+/* hidden input (mobile hack) */
+#hiddenInput {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* BASE GLITCH */
+@keyframes glitch {
+  0% { transform: translate(0); }
+  20% { transform: translate(-2px, 2px); }
+  40% { transform: translate(2px, -2px); }
+  60% { transform: translate(-1px, 1px); }
+  80% { transform: translate(1px, -1px); }
+  100% { transform: translate(0); }
+}
+
+/* SUCCESS GLOW */
+.glow-success {
+  text-shadow: 0 0 10px #00ffcc, 0 0 20px #00ffcc;
+}
+
+/* ERROR (red + shake) */
+.glitch-error {
+  animation: glitch 0.2s, shake 0.2s;
+  text-shadow: 2px 0 red, -2px 0 darkred;
+}
+
+/* SHAKE */
+@keyframes shake {
+  0% { transform: translateX(0); }
+  25% { transform: translateX(-4px); }
+  50% { transform: translateX(4px); }
+  75% { transform: translateX(-4px); }
+  100% { transform: translateX(0); }
+}
+
+/* LEVEL UP GLITCH */
+.glitch-strong {
+  animation: glitch 0.25s;
+  text-shadow: 2px 0 cyan, -2px 0 magenta, 0 0 12px #00ffcc;
+  transform: scale(1.01);
+}
+
+/* FLASH */
+.flash {
+  animation: flash 0.3s;
+}
+
+@keyframes flash {
+  0% { background: black; }
+  30% { background: #00ffcc; }
+  100% { background: black; }
+}
+
+.glitch-peak {
+  animation: glitchPeak 0.18s linear;
+  text-shadow: 3px 0 #0ff, -3px 0 #f0f, 0 0 18px #00ffcc;
+}
+
+@keyframes glitchPeak {
+  0% { transform: translate(0); }
+  25% { transform: translate(-6px, 3px); }
+  50% { transform: translate(6px, -3px); }
+  75% { transform: translate(-4px, 2px); }
+  100% { transform: translate(0); }
+}
+
+/* PYRAMID PULSE */
+.pyramid-pulse {
+  animation: pulseGlow 0.8s ease-out;
+}
+
+@keyframes pulseGlow {
+  0% { text-shadow: 0 0 6px #00ffcc; }
+  50% { text-shadow: 0 0 16px #00ffcc, 0 0 30px #00ffcc; }
+  100% { text-shadow: 0 0 6px #00ffcc; }
+}
+
+.shake-strong {
+  animation: shakeStrong 0.35s cubic-bezier(.36,.07,.19,.97);
+}
+
+@keyframes shakeStrong {
+  0%   { transform: translate(0, 0) rotate(0deg); }
+  15%  { transform: translate(-10px, 6px) rotate(-1deg); }
+  30%  { transform: translate(10px, -6px) rotate(1deg); }
+  45%  { transform: translate(-8px, 5px) rotate(-0.8deg); }
+  60%  { transform: translate(8px, -5px) rotate(0.8deg); }
+  75%  { transform: translate(-6px, 4px) rotate(-0.6deg); }
+  90%  { transform: translate(6px, -4px) rotate(0.6deg); }
+  100% { transform: translate(0, 0) rotate(0deg); }
+}
+
+/* SCANLINES */
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background: repeating-linear-gradient(
+    to bottom,
+    rgba(0, 255, 204, 0.04),
+    rgba(0, 255, 204, 0.04) 1px,
+    transparent 2px,
+    transparent 4px
+  );
+}
+
+/* TERMINAL TEXT ALIGNMENT */
+#terminal {
+  white-space: pre;
+  font-family: monospace;
+  letter-spacing: 0;
+}

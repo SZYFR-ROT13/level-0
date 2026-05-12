@@ -90,7 +90,7 @@ function getCommonPrefix(values) {
 // 🔊 SOUND
 const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
 // 🔊 MASTER VOLUME (0.0 - 1.0)
-let masterVolume = 0.5;
+let masterVolume = 1;
 
 function escapeHTML(value) {
   return value

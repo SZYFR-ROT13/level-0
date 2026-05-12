@@ -90,7 +90,7 @@ function getCommonPrefix(values) {
 // 🔊 SOUND
 const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
 // 🔊 MASTER VOLUME (0.0 - 1.0)
-let masterVolume = 1;
+let masterVolume = 3;
 
 function escapeHTML(value) {
   return value
@@ -153,6 +153,21 @@ function scrollToBottom() {
   const el = document.getElementById("terminal");
   el.scrollTop = el.scrollHeight;
 }
+
+function updateViewportSize() {
+  const viewport = window.visualViewport;
+  const height = viewport ? viewport.height : window.innerHeight;
+  const keyboardOffset = viewport
+    ? Math.max(0, window.innerHeight - viewport.height - viewport.offsetTop)
+    : 0;
+
+  document.documentElement.style.setProperty("--app-height", `${height}px`);
+  document.documentElement.style.setProperty("--keyboard-offset", `${keyboardOffset}px`);
+
+  setTimeout(scrollToBottom, 50);
+}
+
+updateViewportSize();
 
 // 🔽 TYPE EFFECT
 function typeLines(lines, callback) {
@@ -360,9 +375,12 @@ document.addEventListener("keydown", (e) => {
 });
 
 // 📱 Auto scroll when keyboard opens (mobile)
-window.addEventListener("resize", () => {
-  scrollToBottom();
-});
+window.addEventListener("resize", updateViewportSize);
+
+if (window.visualViewport) {
+  window.visualViewport.addEventListener("resize", updateViewportSize);
+  window.visualViewport.addEventListener("scroll", updateViewportSize);
+}
 
 // 📱 Tap screen to fast-forward typing
 terminal.addEventListener("touchstart", () => {

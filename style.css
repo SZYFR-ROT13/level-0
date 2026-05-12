@@ -12,11 +12,11 @@ body {
   font-size: 18px;
   text-shadow: 0 0 6px #00ffcc, 0 0 14px #00ffcc;
   line-height: 1.5;
-  height: 100dvh;
+  height: var(--app-height, 100dvh);
   overflow: hidden;
   display: flex;
   flex-direction: column;
-  padding-bottom: 60px;
+  padding-bottom: calc(60px + var(--keyboard-offset, 0px));
 }
 
 /* mobile */
@@ -150,14 +150,22 @@ body::after {
 /* TERMINAL TEXT ALIGNMENT */
 #terminal {
   white-space: pre-wrap;
-  word-break: normal;
-  overflow-wrap: normal;
+  word-break: break-word;
+  overflow-wrap: anywhere;
   font-family: monospace;
   letter-spacing: 0;
+  width: 100%;
   flex: 1;
   overflow-y: auto;
-  overflow-x: auto;
-  padding-bottom: 80px;
+  overflow-x: hidden;
+  padding-bottom: calc(80px + var(--keyboard-offset, 0px));
+  scroll-padding-bottom: calc(80px + var(--keyboard-offset, 0px));
+}
+
+@media (max-width: 600px) {
+  #terminal {
+    line-height: 1.55;
+  }
 }
 
 .video-wrapper {

@@ -136,7 +136,7 @@ function handleInput(value) {
   // 🔹 FILTER
   else if (input.startsWith("filter")) {
 
-    const match = input.match(/filter\s+(\w+)\s*(=|>|<|>=|<=)\s*(\w+)/);
+    const match = input.match(/filter\s+(\w+)\s*(>=|<=|=|>|<)\s*(\w+)/);
 
     if (!match) { 
       triggerErrorGlitch();
@@ -195,8 +195,11 @@ function handleInput(value) {
       "",
       "> SYSTEM OVERRIDE",
       "",
-      "Dane same w sobie nie mają wartości.",
-      "Dopiero ich przetwarzanie pozwala odkrywać wzorce, zależności i podejmować decyzje.",
+      "Praca z danymi zaczyna się od ich zebrania, oczyszczenia",
+      "i uporządkowania tak, aby były spójne oraz wiarygodne.",
+      "",
+      "Na tej podstawie można budować analizy, raporty, automatyzacje",
+      "i modele, które pomagają lepiej rozumieć rzeczywistość.",
       "",
       "> ACCESS GRANTED",
       "",

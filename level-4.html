@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Level 4</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div id="terminal"></div>
+<input id="hiddenInput" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
+
+<script src="terminal.js"></script>
+<script>
+
+// 📁 VIRTUAL FILE SYSTEM
+const fileSystem = {
+  "tu.kielce": {
+    "polibuda": {
+      "WBiA": {
+        "dziekanat": {
+          "Pani_z_dziekanatu": {
+            type: "person",
+            line: "Poczekaj chwilkę kochanieńki tylko zrobie sobie kawkę",
+            waitsForever: true
+          }
+        },
+        "Architektura": "Architektura łączy projektowanie przestrzeni, wiedzę techniczną i wrażliwość estetyczną. Studenci uczą się tworzyć budynki oraz układy urbanistyczne odpowiadające na potrzeby ludzi i środowiska.",
+        "Budownictwo": "Budownictwo dotyczy projektowania, realizacji i utrzymania obiektów budowlanych. Kierunek przygotowuje do pracy przy konstrukcjach, inwestycjach infrastrukturalnych i zarządzaniu procesem budowy."
+      },
+      "WEAiI": {
+        "dziekanat": {
+          "Pani_z_dziekanatu": {
+            type: "person",
+            line: "Poczekaj chwilkę kochanieńki tylko zrobie sobie kawkę",
+            waitsForever: true
+          }
+        },
+        "Automatyka_i_elektrotechnika_przemyslowa": "Automatyka i elektrotechnika przemysłowa skupia się na sterowaniu maszynami, instalacjami i procesami technologicznymi. Studenci poznają systemy pomiarowe, napędy, układy elektryczne oraz automatykę wykorzystywaną w przemyśle.",
+        "Elektromobilnosc": "Elektromobilność dotyczy pojazdów elektrycznych, infrastruktury ładowania i magazynowania energii. Kierunek przygotowuje do pracy przy nowoczesnym transporcie oraz technologiach ograniczających emisje.",
+        "Elektrotechnika": "Elektrotechnika zajmuje się wytwarzaniem, przesyłaniem i wykorzystaniem energii elektrycznej. Studenci uczą się projektować instalacje, urządzenia i systemy zasilania stosowane w przemyśle oraz codziennym życiu.",
+        "Energetyka": "Energetyka koncentruje się na produkcji, dystrybucji i efektywnym wykorzystaniu energii. Kierunek obejmuje zarówno klasyczne systemy energetyczne, jak i odnawialne źródła oraz technologie transformacji energetycznej.",
+        "Informatyka": "Informatyka obejmuje programowanie, algorytmy, bazy danych, sieci i systemy komputerowe. Studenci uczą się tworzyć oprogramowanie oraz rozwiązywać problemy za pomocą technologii cyfrowych.",
+        "Teleinformatyka": "Teleinformatyka łączy informatykę z telekomunikacją i sieciami komputerowymi. Kierunek przygotowuje do projektowania, zabezpieczania i utrzymywania systemów komunikacji cyfrowej."
+      },
+      "WISGiE": {
+        "dziekanat": {
+          "Pani_z_dziekanatu": {
+            type: "person",
+            line: "Poczekaj chwilkę kochanieńki tylko zrobie sobie kawkę",
+            waitsForever: true
+          }
+        },
+        "Inzynieria_srodowiska": "Inżynieria środowiska zajmuje się ochroną zasobów naturalnych oraz projektowaniem systemów wodnych, sanitarnych i wentylacyjnych. Studenci uczą się rozwiązywać problemy związane z jakością środowiska i infrastrukturą komunalną.",
+        "Geodezja_i_kartografia": "Geodezja i kartografia dotyczą pomiarów przestrzennych, mapowania terenu i analizy danych geograficznych. Kierunek przygotowuje do pracy z technologiami GPS, GIS, fotogrametrią oraz dokumentacją przestrzenną.",
+        "Odnawialne_zrodla_energii": "Odnawialne źródła energii skupiają się na technologiach pozyskiwania energii ze słońca, wiatru, biomasy, wody i geotermii. Studenci poznają projektowanie, ocenę i eksploatację systemów energetycznych przyjaznych środowisku."
+      },
+      "WMiBM": {
+        "dziekanat": {
+          "Pani_z_dziekanatu": {
+            type: "person",
+            line: "Poczekaj chwilkę kochanieńki tylko zrobie sobie kawkę",
+            waitsForever: true
+          }
+        },
+        "Automatyka_i_robotyka": "Automatyka i robotyka zajmuje się projektowaniem systemów sterowania, robotów i inteligentnych maszyn. Studenci uczą się łączyć mechanikę, elektronikę oraz programowanie w rozwiązaniach przemysłowych.",
+        "Informatyka_przemyslowa": "Informatyka przemysłowa łączy programowanie z automatyką, produkcją i analizą danych z maszyn. Kierunek przygotowuje do tworzenia systemów wspierających nowoczesne fabryki i procesy technologiczne.",
+        "Inzynieria_bezpieczenstwa": "Inżynieria bezpieczeństwa dotyczy identyfikowania zagrożeń oraz projektowania systemów ochrony ludzi, infrastruktury i procesów. Studenci uczą się zarządzania ryzykiem, bezpieczeństwa pracy i reagowania kryzysowego.",
+        "Inzynieria_srodkow_transportu": "Inżynieria środków transportu skupia się na projektowaniu, eksploatacji i diagnostyce pojazdów oraz systemów transportowych. Kierunek łączy mechanikę, elektronikę i organizację transportu.",
+        "Mechanika_i_budowa_maszyn": "Mechanika i budowa maszyn zajmuje się projektowaniem, analizą i wytwarzaniem maszyn oraz urządzeń. Studenci poznają konstrukcje, materiały, techniki produkcji i narzędzia inżynierskie.",
+        "Wzornictwo_przemyslowe": "Wzornictwo przemysłowe łączy projektowanie produktów z ergonomią, technologią i potrzebami użytkowników. Studenci uczą się tworzyć przedmioty funkcjonalne, estetyczne i możliwe do produkcji."
+      },
+      "WZiMK": {
+        "dziekanat": {
+          "Pani_z_dziekanatu": {
+            type: "person",
+            line: "Dzień dobry, przyszedł pan zapisać się na kierunek Inżynierii Danych? To świetny wybór. Wszyscy najzdolniejsi uczniowie zapisują się teraz właśnie na Inżynierię Danych."
+          },
+          "Pan_Dominik": {
+            type: "person",
+            line: "Pan Dominik załatwia właśnie bardzo ważne i drogie szkolenia dla swojego kierunku Inżynierii Danych. Lepiej mu nie przeszkadzać."
+          }
+        },
+        "Ekonomia": "Ekonomia bada decyzje ludzi, firm i instytucji dotyczące wykorzystania zasobów. Studenci uczą się analizować rynki, koszty, finanse oraz zjawiska gospodarcze.",
+        "Inzynieria_biomedyczna": "Inżynieria biomedyczna łączy technikę, informatykę i nauki medyczne. Kierunek przygotowuje do projektowania urządzeń, systemów diagnostycznych i rozwiązań wspierających ochronę zdrowia.",
+        "Inzynieria_danych": "Inżynieria danych łączy informatykę, statystykę i analizę biznesową. Studenci uczą się projektować systemy do gromadzenia, przetwarzania i wykorzystywania danych.",
+        "Logistyka": "Logistyka zajmuje się planowaniem przepływu towarów, informacji i zasobów. Studenci poznają transport, magazynowanie, łańcuchy dostaw oraz narzędzia optymalizacji procesów.",
+        "Zarzadzanie_biznesowe": "Zarządzanie biznesowe dotyczy prowadzenia organizacji, planowania strategii i podejmowania decyzji. Kierunek rozwija kompetencje z zakresu finansów, marketingu, ludzi i procesów.",
+        "Inzynieria_zarzadzania_produkcja_i_jakoscia": "Inżynieria zarządzania produkcją i jakością skupia się na usprawnianiu procesów wytwarzania. Studenci uczą się planować produkcję, kontrolować jakość i wdrażać rozwiązania zwiększające efektywność."
+      }
+    },
+    "akademiki": {
+      "FILON": {},
+      "LAURA": {},
+      "BARTEK": {},
+      "ASYSTENT": {},
+      "MIMOZA": {},
+      "PROTON": {}
+    },
+    "pod_krecha": {
+      "Pan_Staszek": {
+        type: "person",
+        line: "Dzień dobry kierowniku złoty, masz może poratować 2 zł? Studiujesz tutaj? Ci dzisiejsi studenci to nie to co kiedyś, dwa piwa wypiją i koniec imprezy, a potem kaca mają przez tydzień. Nie ma nawet po kim puszek zbierać. Chyba że ci z Inżynierii Danych na wydziale WZiMK. Ci to całą noc balują i prosto z imprezy na zajęcia idę i w dodatku wszystkie kolokwia i egzaminy w I terminie na 5 zaliczają."
+      }
+    },
+    "hala_sportowa": {}
+  }
+};
+
+let currentPath = ["tu.kielce"];
+let deanOfficeQueue = {
+  active: false,
+  timeoutId: null
+};
+let deanOfficeTalkWaiting = false;
+
+const deanOfficeHours = {
+  WISGiE: {
+    days: {
+      1: ["09:30", "13:00"],
+      2: ["09:30", "13:00"],
+      4: ["09:30", "13:00"],
+      5: ["09:30", "13:00"]
+    }
+  },
+  WEAiI: {
+    days: {
+      1: ["10:00", "14:00"],
+      2: ["10:00", "14:00"],
+      4: ["10:00", "14:00"],
+      5: ["11:30", "13:00"]
+    }
+  },
+  WBiA: {
+    days: {
+      1: ["11:30", "15:00"],
+      2: ["11:30", "15:00"],
+      4: ["11:30", "15:00"],
+      5: ["11:30", "13:00"]
+    }
+  },
+  WMiBM: {
+    days: {
+      1: ["11:00", "14:00"],
+      2: ["11:00", "14:00"],
+      4: ["11:00", "14:00"],
+      5: ["11:00", "14:00"]
+    }
+  }
+};
+
+function getCurrentDir() {
+  let dir = fileSystem;
+  for (let p of currentPath) {
+    dir = dir[p];
+  }
+  return dir;
+}
+
+function printPath() {
+  return currentPath.join("/");
+}
+
+function showPrompt() {
+  enableInput(handleInput, printPath() + "> ");
+}
+
+function timeToMinutes(value) {
+  const [hours, minutes] = value.split(":").map(Number);
+  return hours * 60 + minutes;
+}
+
+function formatDeanOfficeHours(schedule) {
+  const weekdays = [
+    ["poniedziałek", 1],
+    ["wtorek", 2],
+    ["środa", 3],
+    ["czwartek", 4],
+    ["piątek", 5]
+  ];
+
+  return weekdays.map(([label, day]) => {
+    const hours = schedule.days[day];
+    return hours ? `${label}: ${hours[0]}-${hours[1]}` : `${label}: zamknięte`;
+  });
+}
+
+function getDeanOfficeStatus(department, now = new Date()) {
+  const schedule = deanOfficeHours[department];
+
+  if (!schedule) {
+    return { hasHours: false, open: true, lines: [] };
+  }
+
+  const todayHours = schedule.days[now.getDay()];
+  const currentMinutes = now.getHours() * 60 + now.getMinutes();
+  const isOpen = Boolean(todayHours)
+    && currentMinutes >= timeToMinutes(todayHours[0])
+    && currentMinutes <= timeToMinutes(todayHours[1]);
+
+  return {
+    hasHours: true,
+    open: isOpen,
+    lines: [
+      "dziekanat zamknięty",
+      "",
+      "godziny otwarcia:",
+      ...formatDeanOfficeHours(schedule)
+    ]
+  };
+}
+
+function randomInt(min, max) {
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+function formatQueuePosition(count) {
+  if (count === 1) return "Została 1 osoba przed Tobą.";
+  if (count >= 2 && count <= 4) return `Zostały ${count} osoby przed Tobą.`;
+  return `Zostało ${count} osób przed Tobą.`;
+}
+
+function startDeanOfficeQueue() {
+  let queueCount = randomInt(8, 23);
+  deanOfficeQueue.active = true;
+
+  typeLines([
+    `Jesteś ${queueCount} w kolejce`,
+    "Oczekiwanie..."
+  ], () => {
+    function nextPerson() {
+      const delay = randomInt(20, 200) * 1000;
+
+      deanOfficeQueue.timeoutId = setTimeout(() => {
+        if (!deanOfficeQueue.active) return;
+
+        queueCount--;
+
+        if (queueCount > 0) {
+          typeLines([
+            formatQueuePosition(queueCount),
+            "Oczekiwanie..."
+          ], nextPerson);
+        } else {
+          deanOfficeQueue.active = false;
+          deanOfficeQueue.timeoutId = null;
+          typeLines(["Twoja kolej."], () => {
+            showPrompt();
+          });
+        }
+      }, delay);
+    }
+
+    nextPerson();
+  });
+}
+
+function leaveDeanOfficeQueue() {
+  deanOfficeQueue.active = false;
+
+  if (deanOfficeQueue.timeoutId) {
+    clearTimeout(deanOfficeQueue.timeoutId);
+    deanOfficeQueue.timeoutId = null;
+  }
+
+  if (currentPath[currentPath.length - 1] === "dziekanat") {
+    currentPath.pop();
+  }
+
+  typeLines(["wyszedłeś z kolejki"], () => {
+    showPrompt();
+  });
+}
+
+function leaveDeanOffice() {
+  deanOfficeTalkWaiting = false;
+
+  if (currentPath[currentPath.length - 1] === "dziekanat") {
+    currentPath.pop();
+  }
+
+  typeLines(["wyszedłeś z dziekanatu"], () => {
+    showPrompt();
+  });
+}
+
+function startDeanOfficeTalk(person) {
+  if (!person.waitsForever) {
+    typeLines([person.line], () => {
+      showPrompt();
+    });
+    return;
+  }
+
+  deanOfficeTalkWaiting = true;
+
+  typeLines([
+    person.line,
+    "Oczekiwanie..."
+  ], () => {
+    enableInput(handleInput, printPath() + "> ");
+  });
+}
+
+function isFolder(item) {
+  return item && typeof item === "object" && item.type !== "person";
+}
+
+function isFile(item) {
+  return typeof item === "string";
+}
+
+function isPerson(item) {
+  return item && typeof item === "object" && item.type === "person";
+}
+
+function findFolderKey(dir, target) {
+  return Object.keys(dir).find(folder => folder.toLowerCase() === target.toLowerCase() && isFolder(dir[folder]));
+}
+
+function findFileKey(dir, target) {
+  return Object.keys(dir).find(file => file.toLowerCase() === target.toLowerCase() && isFile(dir[file]));
+}
+
+function findPersonKey(dir, target) {
+  return Object.keys(dir).find(person => person.toLowerCase() === target.toLowerCase() && isPerson(dir[person]));
+}
+
+function showInzynieriaDanychVideo() {
+  playPyramidAnimation(() => {
+    terminal.innerHTML = "";
+
+    const video = document.createElement("div");
+    video.className = "video-wrapper";
+
+    video.innerHTML = `
+      <iframe class="video-frame" src="https://www.youtube.com/embed/EJnh5cLVCtE"
+      title="Inżynieria danych" frameborder="0"
+      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+      allowfullscreen></iframe>
+    `;
+
+    terminal.appendChild(video);
+  });
+}
+
+function getAutocompleteOptions(value) {
+  const commands = ["ls", "cd ", "cat ", "talk ", "pwd", "help"];
+  const lowerValue = value.toLowerCase();
+
+  if (!value.includes(" ")) {
+    return commands.filter(command => command.toLowerCase().startsWith(lowerValue));
+  }
+
+  if (lowerValue.startsWith("cd ")) {
+    const fragment = value.slice(3).toLowerCase();
+    const dir = getCurrentDir();
+    const folders = ["..", ...Object.keys(dir).filter(item => isFolder(dir[item]))];
+
+    return folders
+      .map(folder => `cd ${folder}`)
+      .filter(command => command.toLowerCase().startsWith(`cd ${fragment}`));
+  }
+
+  if (lowerValue.startsWith("cat ")) {
+    const fragment = value.slice(4).toLowerCase();
+    const dir = getCurrentDir();
+    const files = Object.keys(dir).filter(item => isFile(dir[item]));
+
+    return files
+      .map(file => `cat ${file}`)
+      .filter(command => command.toLowerCase().startsWith(`cat ${fragment}`));
+  }
+
+  if (lowerValue.startsWith("talk ")) {
+    const fragment = value.slice(5).toLowerCase();
+    const dir = getCurrentDir();
+    const people = Object.keys(dir).filter(item => isPerson(dir[item]));
+
+    return people
+      .map(person => `talk ${person}`)
+      .filter(command => command.toLowerCase().startsWith(`talk ${fragment}`));
+  }
+
+  return [];
+}
+
+function handleInput(input) {
+  if (deanOfficeQueue.active) {
+    leaveDeanOfficeQueue();
+    return;
+  }
+
+  if (deanOfficeTalkWaiting) {
+    leaveDeanOffice();
+    return;
+  }
+
+  const args = input.trim().split(" ");
+  const target = args.slice(1).join("_");
+  const command = args[0].toLowerCase();
+
+  const dir = getCurrentDir();
+
+  if (command === "ls") {
+    const items = Object.keys(dir);
+    typeLines(items, () => {
+      showPrompt();
+    });
+  }
+
+  else if (command === "cd") {
+    if (!target) {
+      typeLines(["usage: cd <folder>"], () => {
+        showPrompt();
+      });
+      return;
+    }
+
+    if (target === "..") {
+      if (currentPath.length > 1) currentPath.pop();
+      showPrompt();
+      return;
+    }
+
+    const folderKey = findFolderKey(dir, target);
+
+    const fileKey = findFileKey(dir, target);
+    const personKey = findPersonKey(dir, target);
+
+    let shouldStartDeanOfficeQueue = false;
+
+    if (folderKey) {
+      if (folderKey.toLowerCase() === "dziekanat") {
+        const department = currentPath[currentPath.length - 1];
+        const deanOfficeStatus = getDeanOfficeStatus(department);
+
+        if (deanOfficeStatus.hasHours && !deanOfficeStatus.open) {
+          typeLines(deanOfficeStatus.lines, () => {
+            showPrompt();
+          });
+          return;
+        }
+
+        if (deanOfficeStatus.hasHours && deanOfficeStatus.open) {
+          shouldStartDeanOfficeQueue = true;
+        }
+      }
+
+      currentPath.push(folderKey);
+    } else if (fileKey) {
+      typeLines([`'${fileKey}' is a file`, `use: cat ${fileKey}`], () => {
+        showPrompt();
+      });
+      return;
+    } else if (personKey) {
+      typeLines([`'${personKey}' is a person`, `use: talk ${personKey}`], () => {
+        showPrompt();
+      });
+      return;
+    } else {
+      typeLines(["folder not found"], () => {
+        showPrompt();
+      });
+      return;
+    }
+
+    if (shouldStartDeanOfficeQueue) {
+      startDeanOfficeQueue();
+      return;
+    }
+
+    showPrompt();
+  }
+
+  else if (command === "cat") {
+    if (!target) {
+      typeLines(["usage: cat <file>"], () => {
+        showPrompt();
+      });
+      return;
+    }
+
+    const fileKey = findFileKey(dir, target);
+    const folderKey = findFolderKey(dir, target);
+    const personKey = findPersonKey(dir, target);
+
+    if (fileKey) {
+      typeLines(dir[fileKey].split(". ").map((line, index, lines) => {
+        return index < lines.length - 1 ? `${line}.` : line;
+      }), () => {
+        if (fileKey.toLowerCase() === "inzynieria_danych") {
+          showInzynieriaDanychVideo();
+        } else {
+          showPrompt();
+        }
+      });
+      return;
+    }
+
+    if (folderKey) {
+      typeLines([`'${folderKey}' is a folder`, `use: cd ${folderKey}`], () => {
+        showPrompt();
+      });
+      return;
+    }
+
+    if (personKey) {
+      typeLines([`'${personKey}' is a person`, `use: talk ${personKey}`], () => {
+        showPrompt();
+      });
+      return;
+    }
+
+    typeLines(["file not found"], () => {
+      showPrompt();
+    });
+  }
+
+  else if (command === "talk") {
+    if (!target) {
+      typeLines(["usage: talk <person>"], () => {
+        showPrompt();
+      });
+      return;
+    }
+
+    const personKey = findPersonKey(dir, target);
+    const fileKey = findFileKey(dir, target);
+    const folderKey = findFolderKey(dir, target);
+
+    if (personKey) {
+      startDeanOfficeTalk(dir[personKey]);
+      return;
+    }
+
+    if (fileKey) {
+      typeLines([`'${fileKey}' is a file`, `use: cat ${fileKey}`], () => {
+        showPrompt();
+      });
+      return;
+    }
+
+    if (folderKey) {
+      typeLines([`'${folderKey}' is a folder`, `use: cd ${folderKey}`], () => {
+        showPrompt();
+      });
+      return;
+    }
+
+    typeLines(["person not found"], () => {
+      showPrompt();
+    });
+  }
+
+  else if (command === "pwd") {
+    typeLines([printPath()], () => {
+      showPrompt();
+    });
+  }
+
+  else if (command === "help") {
+    typeLines([
+      "available commands:",
+      "ls",
+      "cd <folder>",
+      "cd ..",
+      "cat <file>",
+      "talk <person>",
+      "pwd"
+    ], () => {
+      showPrompt();
+    });
+  }
+
+  else {
+    typeLines([
+      "command not found",
+      "type help"
+    ], () => {
+      showPrompt();
+    });
+  }
+}
+
+// 🚀 START
+
+showBootScreen(() => {
+  typeLines([
+    "> CONNECTING TO FILE SYSTEM...",
+    "> LEVEL: 4",
+    "> ROOT: tu.kielce",
+    ""
+  ], () => {
+    showPrompt();
+  });
+});
+
+</script>
+
+</body>
+</html>

@@ -1,203 +1,713 @@
 <!DOCTYPE html>
 <html lang="pl">
 <head>
-  <meta charset="UTF-8">
-  <title>Level 3</title>
-  <link rel="stylesheet" href="style.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LEVEL 3</title>
+<link rel="stylesheet" href="style.css">
 </head>
+
 <body>
 
 <div id="terminal"></div>
-<input id="hiddenInput" autofocus />
+<input id="hiddenInput" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
 
 <script src="terminal.js"></script>
 <script>
 
-// 📁 VIRTUAL FILE SYSTEM
-const fileSystem = {
-  "tu.kielce": {
-    "polibuda": {
-      "WBiA": {
-        "dziekanat": {},
-        "Architektura": {},
-        "Budownictwo": {}
-      },
-      "WEAiI": {
-        "dziekanat": {},
-        "Automatyka_i_elektrotechnika_przemyslowa": {},
-        "Elektromobilnosc": {},
-        "Elektrotechnika": {},
-        "Energetyka": {},
-        "Informatyka": {},
-        "Teleinformatyka": {}
-      },
-      "WISGiE": {
-        "dziekanat": {},
-        "Inzynieria_srodowiska": {},
-        "Geodezja_i_kartografia": {},
-        "Odnawialne_zrodla_energii": {}
-      },
-      "WMiBM": {
-        "dziekanat": {},
-        "Automatyka_i_robotyka": {},
-        "Informatyka_przemyslowa": {},
-        "Inzynieria_bezpieczenstwa": {},
-        "Inzynieria_srodkow_transportu": {},
-        "Mechanika_i_budowa_maszyn": {},
-        "Wzornictwo_przemyslowe": {}
-      },
-      "WZiMK": {
-        "dziekanat": {},
-        "Ekonomia": {},
-        "Inzynieria_biomedyczna": {},
-        "Inzynieria_danych": {},
-        "Logistyka": {},
-        "Zarzadzanie_biznesowe": {},
-        "Inzynieria_zarzadzania_produkcja_i_jakoscia": {}
-      }
-    },
-    "akademiki": {
-      "FILON": {},
-      "LAURA": {},
-      "BARTEK": {},
-      "ASYSTENT": {},
-      "MIMOZA": {},
-      "PROTON": {}
-    },
-    "pod_krecha": {},
-    "hala_sportowa": {}
-  }
+const jobs = [
+  { id: 1, role: "Frontend Developer", level: "junior", location: "remote", salary_min: 7000, salary_max: 9500, tech: "javascript" },
+  { id: 2, role: "Data Engineer", level: "mid", location: "remote", salary_min: 17000, salary_max: 22000, tech: "python" },
+  { id: 3, role: "Backend Developer", level: "mid", location: "krakow", salary_min: 14000, salary_max: 18000, tech: "java" },
+  { id: 4, role: "QA Engineer", level: "mid", location: "lodz", salary_min: 11000, salary_max: 14500, tech: "testing" },
+  { id: 5, role: "Data Scientist", level: "senior", location: "remote", salary_min: 23000, salary_max: 29000, tech: "ai" },
+  { id: 6, role: "UX Designer", level: "mid", location: "gdansk", salary_min: 10000, salary_max: 13500, tech: "figma" },
+  { id: 7, role: "DevOps Engineer", level: "senior", location: "remote", salary_min: 19000, salary_max: 25000, tech: "cloud" },
+  { id: 8, role: "Data Analyst", level: "mid", location: "warsaw", salary_min: 13500, salary_max: 17000, tech: "sql" },
+  { id: 9, role: "Frontend Developer", level: "mid", location: "poznan", salary_min: 13000, salary_max: 16500, tech: "react" },
+  { id: 10, role: "Security Analyst", level: "senior", location: "warsaw", salary_min: 18000, salary_max: 23500, tech: "security" },
+  { id: 11, role: "Fullstack Developer", level: "mid", location: "remote", salary_min: 15000, salary_max: 19500, tech: "typescript" },
+  { id: 12, role: "Data Engineer", level: "senior", location: "krakow", salary_min: 22000, salary_max: 28500, tech: "spark" },
+  { id: 13, role: "Backend Developer", level: "junior", location: "wroclaw", salary_min: 9000, salary_max: 12000, tech: "node" },
+  { id: 14, role: "QA Engineer", level: "junior", location: "remote", salary_min: 8000, salary_max: 10500, tech: "testing" },
+  { id: 15, role: "Data Scientist", level: "mid", location: "remote", salary_min: 17500, salary_max: 22500, tech: "python" },
+  { id: 16, role: "DevOps Engineer", level: "mid", location: "katowice", salary_min: 16000, salary_max: 20500, tech: "docker" },
+  { id: 17, role: "Data Analyst", level: "senior", location: "wroclaw", salary_min: 19000, salary_max: 23000, tech: "powerbi" },
+  { id: 18, role: "Data Engineer", level: "senior", location: "remote", salary_min: 24000, salary_max: 30500, tech: "airflow" },
+  { id: 19, role: "Data Scientist", level: "junior", location: "kielce", salary_min: 9500, salary_max: 12500, tech: "python" },
+  { id: 20, role: "Frontend Developer", level: "senior", location: "warsaw", salary_min: 17500, salary_max: 22000, tech: "react" },
+  { id: 21, role: "Backend Developer", level: "senior", location: "remote", salary_min: 18500, salary_max: 24000, tech: "java" },
+  { id: 22, role: "QA Engineer", level: "senior", location: "krakow", salary_min: 14500, salary_max: 18500, tech: "testing" },
+  { id: 23, role: "UX Designer", level: "senior", location: "remote", salary_min: 15000, salary_max: 19000, tech: "figma" },
+  { id: 24, role: "Security Analyst", level: "mid", location: "gdansk", salary_min: 15000, salary_max: 19000, tech: "security" },
+  { id: 25, role: "Fullstack Developer", level: "junior", location: "poznan", salary_min: 9000, salary_max: 12500, tech: "javascript" },
+  { id: 26, role: "DevOps Engineer", level: "junior", location: "remote", salary_min: 11500, salary_max: 15000, tech: "linux" },
+  { id: 27, role: "Data Engineer", level: "junior", location: "warsaw", salary_min: 12000, salary_max: 15500, tech: "sql" },
+  { id: 28, role: "Data Analyst", level: "mid", location: "remote", salary_min: 14000, salary_max: 17500, tech: "tableau" },
+  { id: 29, role: "Data Scientist", level: "mid", location: "poznan", salary_min: 18000, salary_max: 23500, tech: "ml" },
+  { id: 30, role: "Backend Developer", level: "mid", location: "lodz", salary_min: 13500, salary_max: 17500, tech: "python" },
+  { id: 31, role: "Frontend Developer", level: "mid", location: "wroclaw", salary_min: 12500, salary_max: 16000, tech: "vue" },
+  { id: 32, role: "QA Engineer", level: "junior", location: "kielce", salary_min: 7500, salary_max: 10000, tech: "testing" },
+  { id: 33, role: "Fullstack Developer", level: "senior", location: "krakow", salary_min: 19500, salary_max: 25000, tech: "typescript" },
+  { id: 34, role: "Security Analyst", level: "junior", location: "remote", salary_min: 9500, salary_max: 12500, tech: "security" },
+  { id: 35, role: "UX Designer", level: "mid", location: "warsaw", salary_min: 11500, salary_max: 15000, tech: "figma" },
+  { id: 36, role: "DevOps Engineer", level: "senior", location: "poznan", salary_min: 20500, salary_max: 26000, tech: "cloud" },
+  { id: 37, role: "Data Engineer", level: "mid", location: "gdansk", salary_min: 16500, salary_max: 21500, tech: "dbt" },
+  { id: 38, role: "Data Analyst", level: "junior", location: "remote", salary_min: 9000, salary_max: 12000, tech: "sql" },
+  { id: 39, role: "Data Scientist", level: "senior", location: "warsaw", salary_min: 23500, salary_max: 30000, tech: "python" },
+  { id: 40, role: "Backend Developer", level: "senior", location: "katowice", salary_min: 17500, salary_max: 22500, tech: "node" },
+  { id: 41, role: "Frontend Developer", level: "junior", location: "lublin", salary_min: 6800, salary_max: 9000, tech: "javascript" },
+  { id: 42, role: "QA Engineer", level: "mid", location: "remote", salary_min: 10500, salary_max: 14000, tech: "cypress" },
+  { id: 43, role: "Fullstack Developer", level: "mid", location: "warsaw", salary_min: 15500, salary_max: 20000, tech: "react" },
+  { id: 44, role: "DevOps Engineer", level: "mid", location: "remote", salary_min: 17000, salary_max: 22000, tech: "docker" },
+  { id: 45, role: "Security Analyst", level: "senior", location: "wroclaw", salary_min: 19500, salary_max: 24500, tech: "security" },
+  { id: 46, role: "UX Designer", level: "junior", location: "krakow", salary_min: 8000, salary_max: 11000, tech: "figma" },
+  { id: 47, role: "Data Engineer", level: "senior", location: "remote", salary_min: 24500, salary_max: 31000, tech: "kafka" },
+  { id: 48, role: "Data Analyst", level: "senior", location: "poznan", salary_min: 18000, salary_max: 22500, tech: "powerbi" },
+  { id: 49, role: "Data Scientist", level: "mid", location: "remote", salary_min: 19000, salary_max: 24000, tech: "ai" },
+  { id: 50, role: "Backend Developer", level: "junior", location: "gdansk", salary_min: 8500, salary_max: 11500, tech: "java" },
+  { id: 51, role: "Frontend Developer", level: "mid", location: "remote", salary_min: 13500, salary_max: 17500, tech: "react" },
+  { id: 52, role: "Backend Developer", level: "senior", location: "warsaw", salary_min: 18000, salary_max: 23500, tech: "python" },
+  { id: 53, role: "Data Engineer", level: "mid", location: "lodz", salary_min: 16000, salary_max: 21000, tech: "airflow" },
+  { id: 54, role: "QA Engineer", level: "mid", location: "poznan", salary_min: 11000, salary_max: 14500, tech: "playwright" },
+  { id: 55, role: "UX Designer", level: "senior", location: "wroclaw", salary_min: 14500, salary_max: 18500, tech: "figma" },
+  { id: 56, role: "DevOps Engineer", level: "mid", location: "krakow", salary_min: 16500, salary_max: 21500, tech: "kubernetes" },
+  { id: 57, role: "Security Analyst", level: "mid", location: "remote", salary_min: 15500, salary_max: 20000, tech: "security" },
+  { id: 58, role: "Fullstack Developer", level: "senior", location: "gdansk", salary_min: 19000, salary_max: 24500, tech: "typescript" },
+  { id: 59, role: "Data Scientist", level: "mid", location: "katowice", salary_min: 17500, salary_max: 23000, tech: "ml" },
+  { id: 60, role: "Frontend Developer", level: "junior", location: "kielce", salary_min: 7200, salary_max: 9800, tech: "javascript" },
+  { id: 61, role: "Backend Developer", level: "mid", location: "remote", salary_min: 14500, salary_max: 19000, tech: "node" },
+  { id: 62, role: "QA Engineer", level: "senior", location: "warsaw", salary_min: 14000, salary_max: 18000, tech: "automation" },
+  { id: 63, role: "Data Analyst", level: "mid", location: "remote", salary_min: 13000, salary_max: 17000, tech: "sql" },
+  { id: 64, role: "UX Designer", level: "mid", location: "poznan", salary_min: 10500, salary_max: 14000, tech: "figma" },
+  { id: 65, role: "DevOps Engineer", level: "senior", location: "remote", salary_min: 20000, salary_max: 25500, tech: "aws" },
+  { id: 66, role: "Security Analyst", level: "junior", location: "lublin", salary_min: 9000, salary_max: 12000, tech: "security" },
+  { id: 67, role: "Fullstack Developer", level: "mid", location: "katowice", salary_min: 15000, salary_max: 19500, tech: "react" }
+];
+
+const baseColumns = ["id", "role", "level", "location", "salary_min", "salary_max", "tech"];
+const tablePreview = {
+  head: 10,
+  tail: 3
 };
 
-let currentPath = ["tu.kielce"];
+let step = 0;
+let activeRows = jobs;
+let activeColumns = baseColumns;
+let activeSalaryColumn = "avg_salary";
+let taskFailedAttempts = [0, 0, 0, 0];
+const sqlPattern = /^select (.+) from jobs(?: where (\w+) *(>=|<=|=|>|<) *'?([\w()]+)'?)?(?: group by ([\w, ]+?))?(?: order by (\w+)(?: (asc|desc))?)?(?: limit (\d+))?$/;
 
-function getCurrentDir() {
-  let dir = fileSystem;
-  for (let p of currentPath) {
-    dir = dir[p];
+const tasks = [
+  {
+    prompt: "> TASK 1: utwórz avg_salary z widełek salary_min i salary_max",
+    check: query => !query.groupBy.length && !query.orderBy && !query.limit && query.parsedFields.some(field => field.type === "computed_avg_salary"),
+    success: "> DATABASE UPDATED"
+  },
+  {
+    prompt: "> TASK 2: pogrupuj średnie pensje według role i level",
+    check: query => query.groupBy.includes("role") && query.groupBy.includes("level") && !query.orderBy && query.parsedFields.some(field => field.type === "avg" && field.source === activeSalaryColumn),
+    success: "> DATABASE UPDATED"
+  },
+  {
+    prompt: "> TASK 3: posortuj tabelę malejąco według średniej pensji",
+    check: query => query.orderBy === activeSalaryColumn && query.direction === "desc",
+    success: "> DATABASE UPDATED"
+  },
+  {
+    prompt: "> TASK 4: wypisz top 3 zawody",
+    check: query => query.limit === 3 && query.fields.includes("role"),
+    success: "> DATABASE UPDATED"
   }
-  return dir;
+];
+
+function normalizeQuery(value) {
+  const normalized = value
+    .trim()
+    .replace(/;$/, "")
+    .replace(/\s+/g, " ")
+    .toLowerCase();
+
+  return fixCommonTypos(normalized);
 }
 
-function printPath() {
-  return currentPath.join("/");
+function fixCommonTypos(query) {
+  const phraseFixes = [
+    [/\bgrop\s+by\b/g, "group by"],
+    [/\bgruop\s+by\b/g, "group by"],
+    [/\bgroub\s+by\b/g, "group by"],
+    [/\border\s+b?y\b/g, "order by"],
+    [/\boder\s+by\b/g, "order by"],
+    [/\bordr\s+by\b/g, "order by"]
+  ];
+
+  const wordFixes = {
+    selec: "select",
+    selct: "select",
+    slect: "select",
+    form: "from",
+    fromm: "from",
+    wher: "where",
+    wheer: "where",
+    limt: "limit",
+    lmit: "limit",
+    avrg: "avg",
+    averge: "avg",
+    maxx: "max",
+    dsc: "desc",
+    des: "desc",
+    acs: "asc",
+    salery_min: "salary_min",
+    salry_min: "salary_min",
+    salarymin: "salary_min",
+    salery_max: "salary_max",
+    salry_max: "salary_max",
+    salarymax: "salary_max",
+    av_salary: "avg_salary",
+    avg_salery: "avg_salary",
+    avgsalary: "avg_salary"
+  };
+
+  let fixed = phraseFixes.reduce((text, [pattern, replacement]) => {
+    return text.replace(pattern, replacement);
+  }, query);
+
+  fixed = fixed.replace(/\b[a-z_]+\b/g, word => wordFixes[word] || word);
+
+  return fixed;
 }
 
-function showPrompt() {
-  enableInput(handleInput, printPath() + "> ");
-}
+function parseField(field) {
+  const computedAvgSalaryMatch = field.match(/^\(\s*(?:salary_min\s*\+\s*salary_max|salary_max\s*\+\s*salary_min)\s*\)\s*\/\s*2(?: as (\w+))?$/);
 
-function handleInput(input) {
-  const args = input.trim().split(" ");
-  const target = args.slice(1).join("_");
-  const command = args[0];
-
-  const dir = getCurrentDir();
-
-  if (command === "ls") {
-    const items = Object.keys(dir);
-    const terminal = document.getElementById("terminal");
-    typeLines(items, () => {
-      showPrompt();
-    });
+  if (computedAvgSalaryMatch) {
+    return {
+      type: "computed_avg_salary",
+      source: "salary_range",
+      output: computedAvgSalaryMatch[1] || "avg_salary"
+    };
   }
 
-  else if (command === "cd") {
-    if (!target) {
-      const terminal = document.getElementById("terminal");
-      typeLines(["usage: cd <folder>"], () => {
-        showPrompt();
-      });
-      return;
+  const avgSalaryRangeMatch = field.match(/^avg\(\(\s*salary_min\s*\+\s*salary_max\s*\)\s*\/\s*2\)(?: as (\w+))?$/);
+
+  if (avgSalaryRangeMatch) {
+    return {
+      type: "avg",
+      source: "salary_range",
+      output: avgSalaryRangeMatch[1] || "avg_salary"
+    };
+  }
+
+  const aggregateMatch = field.match(/^(max|avg)\((\w+)\)(?: as (\w+))?$/);
+
+  if (aggregateMatch) {
+    const [, type, source, alias] = aggregateMatch;
+
+    return {
+      type,
+      source,
+      output: alias || `${type}_${source}`
+    };
+  }
+
+  return {
+    type: "column",
+    source: field,
+    output: field
+  };
+}
+
+function parseSql(value) {
+  const sql = normalizeQuery(value);
+  const match = sql.match(sqlPattern);
+
+  if (!match) return null;
+
+  const [, rawFields, whereField, operator, rawValue, rawGroupBy, orderBy, direction = "asc", rawLimit] = match;
+  const fields = rawFields.split(",").map(field => field.trim());
+  const groupBy = rawGroupBy ? rawGroupBy.split(",").map(field => field.trim()) : [];
+  const parsedFields = fields.map(parseField);
+
+  const availableColumns = getCurrentColumns();
+
+  if (!fields.includes("*") && parsedFields.some(field => field.type === "column" && !availableColumns.includes(field.source))) return null;
+  if (parsedFields.some(field => ["max", "avg"].includes(field.type) && field.source !== "salary_range" && !availableColumns.includes(field.source))) return null;
+  if (whereField && !availableColumns.includes(whereField)) return null;
+  if (groupBy.some(field => !availableColumns.includes(field))) return null;
+
+  const outputColumns = fields.includes("*")
+    ? availableColumns
+    : parsedFields.map(field => field.output);
+
+  if (orderBy && !availableColumns.includes(orderBy) && !outputColumns.includes(orderBy)) return null;
+
+  if (groupBy.length && parsedFields.some(field => field.type === "column" && !groupBy.includes(field.source))) return null;
+
+  return {
+    fields,
+    parsedFields,
+    outputColumns,
+    where: whereField ? {
+      field: whereField,
+      operator,
+      value: rawValue && rawValue.match(/^max\((\w+)\)$/) ? rawValue.match(/^max\((\w+)\)$/)[1] : (isNaN(rawValue) ? rawValue : Number(rawValue)),
+      valueType: rawValue && rawValue.match(/^max\((\w+)\)$/) ? "max" : "literal"
+    } : null,
+    groupBy,
+    orderBy,
+    direction,
+    limit: rawLimit ? Number(rawLimit) : null
+  };
+}
+
+function explainParseError(value) {
+  const sql = normalizeQuery(value);
+  const availableColumns = getCurrentColumns();
+
+  if (!sql) return "> SQL ERROR: wpisz zapytanie.";
+  if (!sql.startsWith("select ")) return "> SQL ERROR: zapytanie musi zaczynać się od SELECT.";
+  if (!sql.includes(" from ")) return "> SQL ERROR: brakuje FROM jobs.";
+
+  const tableMatch = sql.match(/\bfrom\s+(\w+)/);
+  if (tableMatch && tableMatch[1] !== "jobs") return `> SQL ERROR: nie ma tabeli '${tableMatch[1]}'. Użyj FROM jobs.`;
+  if (!sql.includes(" from jobs")) return "> SQL ERROR: użyj dokładnie FROM jobs.";
+  if (/\bgroup by\s*(?:order by|limit)?$/.test(sql)) return "> SQL ERROR: po GROUP BY podaj kolumny.";
+  if (/\border by\s*(?:limit)?$/.test(sql)) return "> SQL ERROR: po ORDER BY podaj kolumnę.";
+  if (/\blimit\s+\D/.test(sql)) return "> SQL ERROR: LIMIT musi być liczbą.";
+
+  const match = sql.match(sqlPattern);
+  if (!match) {
+    return "> SQL ERROR: obsługiwany układ to SELECT ... FROM jobs [WHERE ...] [GROUP BY ...] [ORDER BY ...] [LIMIT n].";
+  }
+
+  const [, rawFields, whereField, , , rawGroupBy, orderBy] = match;
+  const fields = rawFields.split(",").map(field => field.trim());
+  const groupBy = rawGroupBy ? rawGroupBy.split(",").map(field => field.trim()) : [];
+  const parsedFields = fields.map(parseField);
+  const unknownColumn = parsedFields.find(field => field.type === "column" && field.source !== "*" && !availableColumns.includes(field.source));
+  const unknownAggregateColumn = parsedFields.find(field => ["max", "avg"].includes(field.type) && field.source !== "salary_range" && !availableColumns.includes(field.source));
+  const unknownGroupColumn = groupBy.find(field => !availableColumns.includes(field));
+
+  if (unknownColumn) return `> SQL ERROR: kolumna '${unknownColumn.source}' nie istnieje. Wpisz help, żeby zobaczyć kolumny.`;
+  if (unknownAggregateColumn) return `> SQL ERROR: nie można użyć ${unknownAggregateColumn.type.toUpperCase()} na kolumnie '${unknownAggregateColumn.source}', bo jej nie ma.`;
+  if (whereField && !availableColumns.includes(whereField)) return `> SQL ERROR: kolumna '${whereField}' w WHERE nie istnieje.`;
+  if (unknownGroupColumn) return `> SQL ERROR: kolumna '${unknownGroupColumn}' w GROUP BY nie istnieje.`;
+
+  const outputColumns = fields.includes("*")
+    ? availableColumns
+    : parsedFields.map(field => field.output);
+
+  if (orderBy && !availableColumns.includes(orderBy) && !outputColumns.includes(orderBy)) {
+    return `> SQL ERROR: kolumna '${orderBy}' w ORDER BY nie istnieje w aktualnym wyniku.`;
+  }
+
+  const columnOutsideGroup = groupBy.length && parsedFields.find(field => field.type === "column" && !groupBy.includes(field.source));
+  if (columnOutsideGroup) return `> SQL ERROR: kolumna '${columnOutsideGroup.source}' z SELECT musi być też w GROUP BY.`;
+
+  return "> SQL ERROR: nie rozpoznano zapytania.";
+}
+
+function explainTaskMismatch(query) {
+  if (step === 0) {
+    if (query.groupBy.length) return "> TASK ERROR: w TASK 1 nie używaj GROUP BY.";
+    if (query.orderBy) return "> TASK ERROR: w TASK 1 nie sortuj wyników.";
+    if (query.limit) return "> TASK ERROR: w TASK 1 nie ograniczaj liczby wierszy.";
+    return "> TASK ERROR: utwórz kolumnę z wyrażenia (salary_min+salary_max)/2.";
+  }
+
+  if (step === 1) {
+    if (!query.groupBy.includes("role")) return "> TASK ERROR: w GROUP BY brakuje kolumny role.";
+    if (!query.groupBy.includes("level")) return "> TASK ERROR: w GROUP BY brakuje kolumny level.";
+    if (query.orderBy) return "> TASK ERROR: sortowanie zostaw na TASK 3.";
+    if (!query.parsedFields.some(field => field.type === "avg" && field.source === activeSalaryColumn)) {
+      return `> TASK ERROR: policz AVG(${activeSalaryColumn}).`;
     }
+  }
 
-    if (target === "..") {
-      if (currentPath.length > 1) currentPath.pop();
-    }
-    else if (dir[target]) {
-      currentPath.push(target);
+  if (step === 2) {
+    if (query.orderBy !== activeSalaryColumn) return `> TASK ERROR: posortuj po kolumnie ${activeSalaryColumn}.`;
+    if (query.direction !== "desc") return "> TASK ERROR: użyj sortowania malejącego DESC.";
+  }
 
-      // 🎬 special case: Inzynieria_danych
-      const normalizedTarget = target.toLowerCase();
+  if (step === 3) {
+    if (!query.fields.includes("role")) return "> TASK ERROR: w SELECT musi być kolumna role.";
+    if (query.limit !== 3) return "> TASK ERROR: użyj LIMIT 3.";
+  }
 
-      if (normalizedTarget === "inzynieria_danych") {
-        const terminal = document.getElementById("terminal");
+  return "> TASK ERROR: zapytanie działa, ale nie rozwiązuje aktualnego zadania.";
+}
 
-        // najpierw animacja piramidki
-        playPyramidAnimation(() => {
+function runQuery(query) {
+  let result = getActiveRows();
 
-          // po animacji wyczyść terminal
-          terminal.innerHTML = "";
+  if (query.where) {
+    const maxValue = query.where.valueType === "max"
+      ? Math.max(...result.map(job => Number(job[query.where.value])))
+      : null;
 
-          // pokaż video
-          const video = document.createElement("div");
-          video.style.marginTop = "20px";
+    result = result.filter(job => {
+      let fieldValue = job[query.where.field];
+      let compareValue = query.where.valueType === "max" ? maxValue : query.where.value;
 
-          video.innerHTML = `
-            <iframe width="1000" height="560" src="https://www.youtube.com/embed/EJnh5cLVCtE" 
-            title="Inżynieria danych" frameborder="0" 
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-            allowfullscreen></iframe>
-          `;
-
-          terminal.appendChild(video);
-        });
-
-        return; // zatrzymaj dalsze wykonywanie
+      if (typeof fieldValue === "string") {
+        fieldValue = fieldValue.toLowerCase();
+        compareValue = String(compareValue).toLowerCase();
       }
-    } else {
-      const terminal = document.getElementById("terminal");
-      typeLines(["folder not found"], () => {
-        showPrompt();
+
+      switch (query.where.operator) {
+        case "=": return fieldValue == compareValue;
+        case ">": return fieldValue > compareValue;
+        case "<": return fieldValue < compareValue;
+        case ">=": return fieldValue >= compareValue;
+        case "<=": return fieldValue <= compareValue;
+        default: return false;
+      }
+    });
+  }
+
+  if (query.groupBy.length) {
+    const groups = {};
+
+    result.forEach(job => {
+      const key = query.groupBy.map(field => job[field]).join("|");
+      if (!groups[key]) groups[key] = [];
+      groups[key].push(job);
+    });
+
+    result = Object.values(groups).map(rows => {
+      const row = {};
+
+      query.groupBy.forEach(field => {
+        row[field] = rows[0][field];
       });
-      return;
+
+      query.parsedFields.forEach(field => {
+        if (field.type === "max") {
+          row[field.output] = Math.max(...rows.map(item => Number(item[field.source])));
+        }
+
+        if (field.type === "avg") {
+          const sum = rows.reduce((total, item) => total + getNumericValue(item, field.source), 0);
+          row[field.output] = Math.round(sum / rows.length);
+        }
+      });
+
+      return row;
+    });
+  }
+  else if (query.parsedFields.some(field => ["max", "avg"].includes(field.type))) {
+    const row = {};
+
+    query.parsedFields.forEach(field => {
+      if (field.type === "max") {
+        row[field.output] = Math.max(...result.map(item => Number(item[field.source])));
+      }
+
+      if (field.type === "avg") {
+        const sum = result.reduce((total, item) => total + getNumericValue(item, field.source), 0);
+        row[field.output] = Math.round(sum / result.length);
+      }
+    });
+
+    result = [row];
+  }
+
+  if (query.orderBy) {
+    const multiplier = query.direction === "desc" ? -1 : 1;
+    result.sort((a, b) => {
+      if (a[query.orderBy] > b[query.orderBy]) return multiplier;
+      if (a[query.orderBy] < b[query.orderBy]) return -multiplier;
+      return 0;
+    });
+  }
+
+  if (query.limit) {
+    result = result.slice(0, query.limit);
+  }
+
+  return result;
+}
+
+function getNumericValue(row, field) {
+  if (field === "salary_range") {
+    return (Number(row.salary_min) + Number(row.salary_max)) / 2;
+  }
+
+  return Number(row[field]);
+}
+
+function getCurrentColumns() {
+  return activeColumns;
+}
+
+function getActiveRows() {
+  return [...activeRows];
+}
+
+function buildAverageSalaryRows(salaryColumn) {
+  return jobs.map(job => ({
+    id: job.id,
+    role: job.role,
+    level: job.level,
+    location: job.location,
+    [salaryColumn]: Math.round(getNumericValue(job, "salary_range")),
+    tech: job.tech
+  }));
+}
+
+function getOutputColumn(field) {
+  const computedAvgSalaryMatch = field.match(/^\(\s*(?:salary_min\s*\+\s*salary_max|salary_max\s*\+\s*salary_min)\s*\)\s*\/\s*2(?: as (\w+))?$/);
+  if (computedAvgSalaryMatch) return computedAvgSalaryMatch[1] || "avg_salary";
+
+  const avgSalaryRangeMatch = field.match(/^avg\(\(\s*salary_min\s*\+\s*salary_max\s*\)\s*\/\s*2\)(?: as (\w+))?$/);
+  if (avgSalaryRangeMatch) return avgSalaryRangeMatch[1] || "avg_salary";
+
+  const aggregateMatch = field.match(/^(max|avg)\((\w+)\)(?: as (\w+))?$/);
+  if (!aggregateMatch) return field;
+
+  const [, type, source, alias] = aggregateMatch;
+  return alias || `${type}_${source}`;
+}
+
+function selectFields(rows, fields) {
+  const selectedColumns = fields.includes("*")
+    ? getCurrentColumns()
+    : fields.map(getOutputColumn);
+
+  return rows.map(row => {
+    const selected = {};
+    selectedColumns.forEach(column => {
+      selected[column] = row[column];
+    });
+    return selected;
+  });
+}
+
+function formatTable(rows, fields = getCurrentColumns()) {
+  const selectedColumns = fields.includes("*")
+    ? getCurrentColumns()
+    : fields.map(getOutputColumn);
+
+  if (rows.length === 0) {
+    return ["> NO ROWS RETURNED"];
+  }
+
+  const widths = selectedColumns.map(column => {
+    const values = rows.map(row => String(row[column]).length);
+    const minWidth = column === "id" ? 3 : column.length;
+    return Math.max(minWidth, ...values);
+  });
+
+  const header = selectedColumns
+    .map((column, index) => column.padEnd(widths[index]))
+    .join(" | ");
+
+  const separator = widths
+    .map(width => "-".repeat(width))
+    .join("-+-");
+
+  const visibleRows = rows.length > tablePreview.head + tablePreview.tail
+    ? [
+      ...rows.slice(0, tablePreview.head),
+      null,
+      ...rows.slice(-tablePreview.tail)
+    ]
+    : rows;
+
+  const dataRows = visibleRows.map(row => {
+    if (row === null) {
+      return selectedColumns
+        .map((column, index) => (index === 0 ? "..." : "").padEnd(widths[index]))
+        .join(" | ");
     }
 
-    const terminal = document.getElementById("terminal");
-    showPrompt();
+    return selectedColumns
+    .map((column, index) => String(row[column]).padEnd(widths[index]))
+    .join(" | ");
+  });
+
+  return [header, separator, ...dataRows];
+}
+
+function showHelp() {
+  const helpSteps = [
+    {
+      syntax: "SELECT <expression> AS <alias> FROM jobs;"
+    },
+    {
+      syntax: "SELECT <columns>, AVG(<column>) AS <alias> FROM jobs GROUP BY <columns>;"
+    },
+    {
+      syntax: "SELECT * FROM jobs ORDER BY <column> DESC;"
+    },
+    {
+      syntax: "SELECT <columns> FROM jobs LIMIT <number>;"
+    }
+  ];
+
+  const currentHelp = helpSteps[step] || helpSteps[helpSteps.length - 1];
+  const hints = [
+    () => "avg_salary=(salary_min+salary_max)/2",
+    () => `role, level, AVG(${activeSalaryColumn}) AS ${activeSalaryColumn}`
+  ];
+  const currentHint = hints[step] ? hints[step]() : null;
+  const extraHints = taskFailedAttempts[step] >= 3 && currentHint
+    ? [
+      "",
+      "> HINT:",
+      currentHint
+    ]
+    : [];
+
+  typeLines([
+    "> SQL HELP:",
+    "",
+    "> SYNTAX:",
+    currentHelp.syntax,
+    "",
+    "> COLUMNS:",
+    getCurrentColumns().join(" | "),
+    ...extraHints
+  ], () => {
+    enableInput(handleInput, "sql> ");
+  });
+}
+
+function showTask() {
+  typeLines([
+    getTaskPrompt(),
+    "> TYPE 'help' FOR SYNTAX",
+    ""
+  ], () => {
+    enableInput(handleInput, "sql> ");
+  });
+}
+
+function getTaskPrompt() {
+  if (step === 2) {
+    return `${tasks[step].prompt} (${activeSalaryColumn})`;
   }
 
-  else if (command === "pwd") {
-    const terminal = document.getElementById("terminal");
-    typeLines([printPath()], () => {
-      showPrompt();
-    });
+  return tasks[step].prompt;
+}
+
+function completeLevel() {
+  typeLines([
+    "> ACCESS GRANTED",
+    "",
+    "Inżynieria danych to dziedzina zajmująca się zbieraniem,",
+    "porządkowaniem, przetwarzaniem i udostępnianiem danych.",
+    "",
+    "Obejmuje zawody takie jak Data Engineer, Analytics Engineer,",
+    "Database Developer, BI Developer czy Data Architect.",
+    "",
+    "Specjaliści w tych rolach projektują systemy, które dostarczają dane",
+    "do analiz, raportów, aplikacji oraz modeli AI.",
+    "",
+    "To dobrze opłacany obszar, bo łączy programowanie, bazy danych,",
+    "automatyzację i rozumienie biznesu. Firmy potrzebują takich osób,",
+    "żeby podejmować decyzje na podstawie wiarygodnych informacji.",
+    "",
+    "Rosnące znaczenie AI sprawia, że dobre dane stają się jeszcze cenniejsze,",
+    "a inżynierowie danych są jednymi z kluczowych specjalistów w tym procesie.",
+    "",
+    "→ LEVEL 4"
+  ], () => {
+    goToLevel("level-4.html");
+  });
+}
+
+function handleInput(value) {
+  const input = value.trim();
+
+  if (input.toLowerCase() === "help") {
+    showHelp();
+    return;
   }
 
-  else if (command === "help") {
-    const terminal = document.getElementById("terminal");
+  const query = parseSql(input);
+
+  if (!query) {
+    taskFailedAttempts[step]++;
+    triggerErrorGlitch();
     typeLines([
-      "available commands:",
-      "ls",
-      "cd <folder>",
-      "cd ..",
-      "pwd"
+      explainParseError(input),
+      "> TYPE 'help'"
     ], () => {
-      showPrompt();
+      enableInput(handleInput, "sql> ");
     });
+    return;
   }
 
-  else {
-    const terminal = document.getElementById("terminal");
+  if (tasks[step].check(query)) {
+    taskFailedAttempts[step] = 0;
+
+    if (step === 0) {
+      const computedSalaryField = query.parsedFields.find(field => field.type === "computed_avg_salary");
+      activeSalaryColumn = computedSalaryField.output;
+      activeRows = buildAverageSalaryRows(activeSalaryColumn);
+      activeColumns = ["id", "role", "level", "location", activeSalaryColumn, "tech"];
+    } else {
+      const rows = runQuery(query);
+      activeRows = selectFields(rows, query.fields);
+      activeColumns = query.fields.includes("*")
+        ? getCurrentColumns()
+        : query.fields.map(getOutputColumn);
+
+      if (step === 1) {
+        const aggregateSalaryField = query.parsedFields.find(field => field.type === "avg" && field.source === activeSalaryColumn);
+        activeSalaryColumn = aggregateSalaryField.output;
+      }
+    }
+
+    triggerSuccess();
     typeLines([
-      "command not found",
-      "type help"
+      tasks[step].success,
+      "",
+      ...formatTable(activeRows, activeColumns),
+      ""
     ], () => {
-      showPrompt();
+      step++;
+
+      if (step < tasks.length) {
+        showTask();
+      } else {
+        completeLevel();
+      }
+    });
+  } else {
+    taskFailedAttempts[step]++;
+    const rows = runQuery(query);
+    const selectedRows = selectFields(rows, query.fields);
+    const output = formatTable(selectedRows, query.fields);
+
+    typeLines([
+      "> QUERY EXECUTED",
+      "",
+      ...output,
+      "",
+      explainTaskMismatch(query),
+      ""
+    ], () => {
+      showTask();
     });
   }
 }
-
-// 🚀 START
 
 showBootScreen(() => {
   typeLines([
-    "> CONNECTING TO FILE SYSTEM...",
-    "> ROOT: tu.kielce",
+    "> INITIALIZING NODE...",
+    "> LEVEL: 3",
+    "",
+    "> CONNECTING TO JOB MARKET API...",
+    "> DOWNLOADING IT JOB OFFERS...",
+    "> NORMALIZING SALARY DATA...",
+    "> BUILDING TABLE: jobs",
+    `> RECORDS LOADED: ${jobs.length}`,
+    "",
+    ...formatTable(jobs),
     ""
-  ], () => {
-    showPrompt();
-  });
+  ], showTask);
 });
 
 </script>

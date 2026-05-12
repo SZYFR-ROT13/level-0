@@ -36,8 +36,12 @@
 |----|-------|------|--------|
 | 1  | Wna   | 21   | Xvrypr |
 | 2  | Naan  | 19   | Xenxbj |`,
-      `fcbfóo betnavmbjnavn v cemrpubjljnavn qnalpu,
-xgóel hzbżyvjvn vpu rsrxgljar jlxbemlfgnavr v cemrgjnemnavr.`
+      `0x
+6d6265746e61766d626a6e616c2c20727972786765626176
+706d616c206d6f76c3b3652063626a76c4856d6e616c7075
+206d722066626fc4852076617362657a6e7077762028716e
+616c7075292c2063656d727075626a6c6a6e616c206a2066
+6c6667727a76722078627a6368677265626a6c7a`
     ];
 
     const questions = [
@@ -50,12 +54,8 @@ xgóel hzbżyvjvn vpu rsrxgljar jlxbemlfgnavr v cemrgjnemnavr.`
       ["anNvbg=="],
       ["dGFibGU=", "dGFiZWxh", "dGFibGljYQ=="],
       [
-        "c3RydWt0dXJh",
-        "c3RydWt0dXJhIGRhbnljaA==",
-        "c3RydWt0dXJ5",
-        "c3RydWt0dXJ5IGRhbnljaA==",
-        "c3R1Y3R1cmU=",
-        "ZGF0YSBzdHJ1Y3R1cmU="
+        "YmF6YSBkYW55Y2g=",
+        "ZGF0YWJhc2U="
       ]
     ];
 
@@ -96,14 +96,17 @@ xgóel hzbżyvjvn vpu rsrxgljar jlxbemlfgnavr v cemrgjnemnavr.`
           if (step < dataSets.length) {
             loadStep();
           } else {
-            typeLines([
-              "> ACCESS GRANTED",
-              "",
-              "Struktura porządkuje dane i nadaje im znaczenie.",
-              "Dzięki niej można je efektywnie wykorzystać.",
-              "",
-              "→ LEVEL 2"
-            ], () => {
+              typeLines([
+                "> ACCESS GRANTED",
+                "",
+                "Baza danych to uporządkowany system przechowywania informacji.",
+                "Każdy rekord ma swoje miejsce, a każda kolumna opisuje konkretną cechę.",
+                "",
+                "Dzięki temu dane można odnaleźć, porównać i połączyć",
+                "z innymi informacjami bez tracenia ich znaczenia.",
+                "",
+                "→ LEVEL 2"
+              ], () => {
 
               goToLevel("level-2.html");
             });

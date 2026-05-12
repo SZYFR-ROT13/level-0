@@ -37,11 +37,69 @@ let input = "";
 let inputActive = false;
 let isTyping = false;
 let fastForward = false;
+const commandHistory = [];
+let historyIndex = 0;
+const progressKey = "terminalGameMaxUnlockedLevel";
+
+function getLevelFromUrl(url = window.location.pathname) {
+  const fileName = url.split("/").pop() || "index.html";
+  if (fileName === "index.html" || fileName === "") return 0;
+
+  const match = fileName.match(/^level-(\d+)\.html$/);
+  return match ? Number(match[1]) : 0;
+}
+
+function getLevelUrl(level) {
+  return level === 0 ? "index.html" : `level-${level}.html`;
+}
+
+function getMaxUnlockedLevel() {
+  return Number(localStorage.getItem(progressKey) || 0);
+}
+
+function unlockLevel(level) {
+  const maxUnlockedLevel = getMaxUnlockedLevel();
+  if (level > maxUnlockedLevel) {
+    localStorage.setItem(progressKey, String(level));
+  }
+}
+
+function guardLevelAccess() {
+  const currentLevel = getLevelFromUrl();
+  const maxUnlockedLevel = getMaxUnlockedLevel();
+
+  if (currentLevel > maxUnlockedLevel) {
+    window.location.replace(getLevelUrl(maxUnlockedLevel));
+  }
+}
+
+guardLevelAccess();
+
+function getCommonPrefix(values) {
+  if (!values.length) return "";
+
+  return values.reduce((prefix, value) => {
+    let index = 0;
+    while (index < prefix.length && index < value.length && prefix[index].toLowerCase() === value[index].toLowerCase()) {
+      index++;
+    }
+    return prefix.slice(0, index);
+  });
+}
 
 // 🔊 SOUND
 const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
 // 🔊 MASTER VOLUME (0.0 - 1.0)
-let masterVolume = 10;
+let masterVolume = 0.5;
+
+function escapeHTML(value) {
+  return value
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+}
 
 function playTone(frequency = 400, duration = 0.04, volume = 0.02) {
   const oscillator = audioCtx.createOscillator();
@@ -112,7 +170,7 @@ function typeLines(lines, callback) {
 
         // ⚡ FAST FORWARD → cała linia od razu
         if (fastForward) {
-          terminal.innerHTML += lines[i].slice(j);
+          terminal.innerHTML += escapeHTML(lines[i].slice(j));
           j = lines[i].length;
           playTyping()
           playTyping()
@@ -121,7 +179,7 @@ function typeLines(lines, callback) {
           setTimeout(type, 0);
           return;
         }
-        terminal.innerHTML += lines[i][j];
+        terminal.innerHTML += escapeHTML(lines[i][j]);
         // force layout update for smoother mobile rendering
         terminal.offsetHeight;
         if(Math.random() < 0.5) playTyping();
@@ -200,7 +258,7 @@ function enableInput(onSubmit, promptText = "> ") {
 
     const lines = terminal.innerHTML.split("<br>");
     lines[lines.length - 1] =
-      promptText + input + '<span class="cursor"></span>';
+      escapeHTML(promptText) + escapeHTML(input) + '<span class="cursor"></span>';
     terminal.innerHTML = lines.join("<br>");
     scrollToBottom();
   }
@@ -212,6 +270,42 @@ function enableInput(onSubmit, promptText = "> ") {
   };
 
   hiddenInput.onkeydown = (e) => {
+
+    if (e.key === "Tab") {
+      e.preventDefault();
+
+      if (typeof getAutocompleteOptions === "function") {
+        const matches = getAutocompleteOptions(input);
+        const completion = getCommonPrefix(matches);
+
+        if (completion && completion.length > input.length) {
+          input = completion;
+          hiddenInput.value = input;
+          playTyping();
+          updateInput();
+        }
+      }
+
+      return;
+    }
+
+    if (e.key === "ArrowUp" && commandHistory.length) {
+      e.preventDefault();
+      historyIndex = Math.max(0, historyIndex - 1);
+      input = commandHistory[historyIndex];
+      hiddenInput.value = input;
+      updateInput();
+      return;
+    }
+
+    if (e.key === "ArrowDown" && commandHistory.length) {
+      e.preventDefault();
+      historyIndex = Math.min(commandHistory.length, historyIndex + 1);
+      input = commandHistory[historyIndex] || "";
+      hiddenInput.value = input;
+      updateInput();
+      return;
+    }
 
     if (e.key.length === 1 || e.key === "Backspace") {
       playTyping();
@@ -229,6 +323,10 @@ function enableInput(onSubmit, promptText = "> ") {
 
       playClick();
       e.preventDefault();
+      if (input.trim() && commandHistory[commandHistory.length - 1] !== input) {
+        commandHistory.push(input);
+      }
+      historyIndex = commandHistory.length;
       inputActive = false;
       terminal.innerHTML += "<br>";
       onSubmit(input);
@@ -379,6 +477,7 @@ function playPyramidAnimation(callback) {
 
 // 🔽 LEVEL TRANSITION
 function goToLevel(nextLevelUrl) {
+  unlockLevel(getLevelFromUrl(nextLevelUrl));
   triggerLevelUp();
 
   playPyramidAnimation(() => {
